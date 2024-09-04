@@ -2,9 +2,11 @@
 #define PHYSICALOBJECT_H
 
 #include "observer.h"
+/** @cond */
 #include <vector>
 #include <memory>
 #include <SFML/Graphics.hpp>
+/** @endcond */
 
 class Observer;
 
@@ -19,7 +21,8 @@ class PhysicalObject {
 	void removeObserver(Observer* observer);
 	bool doesCollide(const sf::Shape& other) const;
 	bool doesCollide(const PhysicalObject& other) const;
-
+	const sf::Shape& getShape() const;
+	
 	protected:
 	void move(const sf::Vector2f& destination);
 	std::unique_ptr<sf::Shape> m_shape;

@@ -2,7 +2,9 @@
 #define BALL_H
 
 #include "physicalObject.h"
+/** @cond */
 #include <SFML/Graphics.hpp>
+/** @endcond */
 
 /*! 
     *  \brief Ball class
@@ -11,7 +13,7 @@
     */
 class Ball: public PhysicalObject {
     public:
-    Ball(float size, double direction, double vel);
+    Ball(sf::Vector2f pos, float size, double direction, double vel);
     Ball() = delete; //game does not work with default ball that does not move
 
     /**
@@ -19,7 +21,7 @@ class Ball: public PhysicalObject {
      * \details
      * Move ball according to laws of physics.
      */
-    void moveBall();
+    void moveBall(sf::Time elapsed);
 
     /*! 
         *  \brief bounce the ball
