@@ -8,8 +8,8 @@
 
 class Command{
     public:
-    Command(double moveBy): m_moveBy(moveBy) {}
-    virtual void execute(PhysicalObject&) = 0;
+    Command(double moveBy);
+    virtual void execute(PhysicalObject&, const sf::Time& elapsed) = 0;
     virtual ~Command() = default;
     protected: 
     double m_moveBy;
@@ -18,13 +18,13 @@ class Command{
 class upCommand : public Command{
     public:
     upCommand(double moveBy): Command(moveBy){}
-    void execute(PhysicalObject&) override;
+    void execute(PhysicalObject&, const sf::Time& elapsed) override;
 };
 
 class downCommand : public Command{
     public:
     downCommand(double moveBy): Command(moveBy){}
-    void execute(PhysicalObject&) override;
+    void execute(PhysicalObject&, const sf::Time& elapsed) override;
 };
 
 #endif // COMMAND_H

@@ -10,6 +10,7 @@ find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 set (SRC 
     "ball.cpp"
     "physicalObject.cpp"
+    "command.cpp"
 )
 if(NOT SRC)
     message(FATAL_ERROR "SRC is empty")
