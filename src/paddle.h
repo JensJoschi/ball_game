@@ -2,8 +2,10 @@
 #define PADDLE_H
 
 #include "physicalObject.h"
+/** @cond */
 #include <cassert>
 #include <memory>
+/** @endcond */
 
 /*! 
     *  \brief Paddle class

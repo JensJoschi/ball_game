@@ -2,7 +2,9 @@
 #define COMMAND_H
 
 #include "physicalObject.h"
+/** @cond */
 #include <cassert>
+/** @endcond */
 
 class Command{
     public:

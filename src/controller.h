@@ -2,7 +2,9 @@
 #define CONTROLLER_H
 
 #include "command.h"
+/** @cond */
 #include <memory>
+/** @endcond */
 
 class Controller{
     public:

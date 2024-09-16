@@ -5,12 +5,11 @@
 #include "paddle.h"
 #include "observer.h"
 #include "controller.h"
+/** @cond */
+#include <memory>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
-
-/** @cond */
-#include <memory>
 /** @endcond */
 
 

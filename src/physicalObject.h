@@ -21,7 +21,7 @@ class PhysicalObject {
 	void removeObserver(Observer* observer);
 	bool doesCollide(const sf::Shape& other) const;
 	bool doesCollide(const PhysicalObject& other) const;
-	const sf::Shape& getShape() const;
+	const sf::Shape* getShape() const;
 	
 	protected:
 	void move(const sf::Vector2f& destination);

@@ -33,6 +33,3 @@ endforeach()
 add_executable("ballgame"    ${SRC_FILES} "main.cpp" )
 target_include_directories(ballgame PRIVATE ${SFML_INCLUDE_DIRS})
 target_link_libraries(ballgame PRIVATE sfml-graphics sfml-window sfml-system)
-
-get_target_property(INCLUDE_DIRS ballgame INCLUDE_DIRECTORIES)
-message(STATUS "Include directories for ball game: ${INCLUDE_DIRS}")
