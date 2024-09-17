@@ -17,7 +17,7 @@ FetchContent_MakeAvailable(googletest)
 find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 
 # --- find sources ---
-set(TEST_SOURCES  physicalObjectTest.cpp ballTest.cpp commandTest.cpp
+set(TEST_SOURCES  physicalObjectTest.cpp ballTest.cpp commandTest.cpp playerTest.cpp
                 )
 
 

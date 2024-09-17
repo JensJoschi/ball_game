@@ -11,6 +11,7 @@ set (SRC
     "ball.cpp"
     "physicalObject.cpp"
     "command.cpp"
+    "playerKB.cpp"
 )
 if(NOT SRC)
     message(FATAL_ERROR "SRC is empty")
