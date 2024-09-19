@@ -5,6 +5,8 @@
 #include "paddle.h"
 #include "observer.h"
 #include "controller.h"
+#include "renderer.h"
+
 /** @cond */
 #include <memory>
 #include <SFML/Graphics.hpp>
@@ -28,6 +30,7 @@ class Game{
 
     private:
     sf::RenderWindow m_window;
+    Renderer m_renderer; //an observer likely.
     std::unique_ptr<Controller> m_c1; 
     std::unique_ptr<Controller> m_c2;
     Paddle m_pLeft;
@@ -36,11 +39,13 @@ class Game{
 
     int m_score1;
     int m_score2;
-
     double m_ballVelocity;
 
+    void update(const std::vector<sf::Event>& events, const sf::Time& elapsed);
     void assignControls();
     void addBall(double speed);
+    bool handleCollisions(const sf::Time& elapsed);
+    void movePlayer(Paddle& paddle, Controller* control, const std::vector<sf::Event>& events, const sf::Time& elapsed);
 };
 
 #endif // FIELD_H

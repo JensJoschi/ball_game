@@ -29,11 +29,11 @@ bool PhysicalObject::doesCollide(const sf::Shape& other) const {
 }
 
 bool PhysicalObject::doesCollide(const PhysicalObject& other) const {
-	return m_shape->getGlobalBounds().intersects(other.getShape()->getGlobalBounds());
+	return m_shape->getGlobalBounds().intersects(other.getShape().getGlobalBounds());
 }
 
-const sf::Shape* PhysicalObject::getShape() const {
-	return m_shape.get();
+const sf::Shape& PhysicalObject::getShape() const {
+	return *m_shape.get();
 }
 
 void PhysicalObject::move(const sf::Vector2f& destination) {

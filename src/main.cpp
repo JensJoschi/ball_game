@@ -1,8 +1,12 @@
-#include "ball.h"
+#include "game.h"
 #include <SFML/Graphics.hpp>
-
 int main(){
-Ball b(sf::Vector2f(0,0), 10, 0, 3);
-sf::Time t;
-b.moveBall(t);
+    float width= 800.0;
+    float height= 600.0;
+    float paddleSize= 40.0;
+    int ballVelocity= 100; //pixels per second
+    Game g{width, height, paddleSize, paddleSize, ballVelocity};
+    g.start();
+    g.run();
+    return 0;
 }
