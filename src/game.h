@@ -5,6 +5,7 @@
 #include "paddle.h"
 #include "observer.h"
 #include "controller.h"
+#include "gameState.h"
 #include "renderer.h"
 
 /** @cond */
@@ -30,7 +31,8 @@ class Game{
 
     private:
     sf::RenderWindow m_window;
-    Renderer m_renderer; //an observer likely.
+    GameState m_gameState;
+    Renderer m_renderer;
     std::unique_ptr<Controller> m_c1; 
     std::unique_ptr<Controller> m_c2;
     Paddle m_pLeft;

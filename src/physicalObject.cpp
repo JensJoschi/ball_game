@@ -12,7 +12,7 @@ PhysicalObject::PhysicalObject(std::unique_ptr<sf::Shape> shape): m_shape(std::m
 
 PhysicalObject::~PhysicalObject() {
 	for (auto i : m_observers) {
-		// i->onDangle();
+		i->onDangle(this->m_shape.get());
 	}
 }
 

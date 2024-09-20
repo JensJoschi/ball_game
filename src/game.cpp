@@ -17,14 +17,17 @@
 
 Game::Game(float extentX, float extentY, float player1Size, float player2Size, int ballVelocity)
     : m_window(sf::VideoMode(extentX, extentY), "Display!"),
-      m_renderer(&m_window),
+      m_gameState(),
+      m_renderer(&m_window, m_gameState),
       m_pLeft(sf::Vector2f{20.0f, extentY/2}, player1Size, 10.0f),
       m_pRight(sf::Vector2f{extentX-20.0f, extentY/2}, player2Size, 10.0f),
       m_score1(0), m_score2(0), m_ballVelocity(ballVelocity)
     {
         srand(0);
-        m_renderer.addDrawable(&m_pLeft.getShape());
-        m_renderer.addDrawable(&m_pRight.getShape());
+        m_gameState.addDrawable(&m_pLeft.getShape());
+        m_gameState.addDrawable(&m_pRight.getShape());
+        m_pLeft.addObserver(&m_gameState);
+        m_pRight.addObserver(&m_gameState);
         m_renderer.display();
     }
 
@@ -78,7 +81,8 @@ void Game::addBall(double speed){
     sf::Vector2u windowSize = m_window.getSize();
     m_ball = std::make_unique<Ball>(sf::Vector2f{windowSize.x/2.0f, 
         windowSize.y/2.0f}, 10.0f, direction, speed);
-    m_renderer.addDrawable(&m_ball->getShape());
+    m_ball->addObserver(&m_gameState);
+    m_gameState.addDrawable(&m_ball->getShape());
 }
 
 

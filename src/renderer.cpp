@@ -4,11 +4,12 @@
 #include <cassert>
 #include <algorithm>
 #include <iostream>
+#include <SFML/Graphics.hpp>
 /** @endcond */
 
 void Renderer::display(){
 	window->clear(sf::Color::Black);
-	for (const auto& obj : drawables){
+	for (const auto& obj : m_gameState.drawables){
         if (obj){ 
             window->draw(*obj); 
         } 
@@ -16,8 +17,6 @@ void Renderer::display(){
 	window->display();
 }
 
-void Renderer::addDrawable( const sf::Drawable* object){
-	assert(object);
-	drawables.emplace_back(object);
+int Renderer::getNoObjects(){
+    return m_gameState.drawables.size();
 }
-

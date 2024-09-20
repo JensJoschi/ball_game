@@ -1,6 +1,5 @@
 #pragma once
-#include "physicalObject.h"
-
+#include "gameState.h"
 /** @cond */
 #include <SFML/Graphics.hpp>
 #include <map>
@@ -8,13 +7,13 @@
 #include <vector>
 /** @endcond */
 
-class Renderer{ //inherit from observer?
+class Renderer{
     public: 
-    Renderer(sf::RenderWindow* window): window(window){};
+    Renderer(sf::RenderWindow* window, const GameState& gs): window(window), m_gameState(gs){};
     void display();
-    void addDrawable(const sf::Drawable* object);
+    int getNoObjects();
     private:
     sf::RenderWindow* window;
-    std::vector<const sf::Drawable*> drawables;
+    const GameState& m_gameState;
 };
 

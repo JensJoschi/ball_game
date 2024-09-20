@@ -8,7 +8,7 @@ find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 ## ---- find sources ----
 
 set (SRC 
-    "ball.cpp" "command.cpp"  "game.cpp" "physicalObject.cpp" "playerKB.cpp"
+    "ball.cpp" "command.cpp"  "game.cpp" "gameState.cpp" "physicalObject.cpp" "playerKB.cpp"
     "renderer.cpp"
 )
 if(NOT SRC)

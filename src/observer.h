@@ -1,11 +1,15 @@
 #ifndef OBSERVER_H
 #define OBSERVER_H
 
+/** @cond */
+#include <SFML/Graphics.hpp>
+/** @endcond */
+
 class Observer {
 public:
     Observer(){}
-    virtual void onNotify() = 0;
-    virtual void onDangle() = 0;
+    virtual void onNotify(const sf::Drawable* oldD, const sf::Drawable* newD) = 0;
+    virtual void onDangle(const sf::Drawable* object) = 0;
 };
 
 
