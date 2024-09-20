@@ -5,6 +5,7 @@
 #include "observer.h"
 #include "command.h"
 #include "playerKB.h"
+#include "playermouse.h"
 #include "renderer.h"
 
 /** @cond */
@@ -93,12 +94,13 @@ void Game::assignControls(){
     PlayerKBSetupParams p1Params{250.0, upKey , downKey};
     m_c1 = std::make_unique<PlayerKB>(p1Params);
 
-    std::cout << "Player 2, please enter up key" << std::endl;
-    upKey = getKeyPressed();
-    std::cout << "Player 2, please enter down key" << std::endl;
-    downKey = getKeyPressed();
-    PlayerKBSetupParams p2Params{250.0, upKey , downKey};
-    m_c2 = std::make_unique<PlayerKB>(p2Params);
+    // std::cout << "Player 2, please enter up key" << std::endl;
+    // upKey = getKeyPressed();
+    // std::cout << "Player 2, please enter down key" << std::endl;
+    // downKey = getKeyPressed();
+    // PlayerKBSetupParams p2Params{250.0, upKey , downKey};
+    // m_c2 = std::make_unique<PlayerKB>(p2Params);
+    m_c2 = std::make_unique<PlayerMouse>(250.0, m_window);
 
 }
 
