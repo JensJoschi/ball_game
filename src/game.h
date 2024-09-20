@@ -40,8 +40,11 @@ class Game{
     std::unique_ptr<Ball> m_ball;
 
     int m_score1;
+    sf::Text m_score1Text;
     int m_score2;
+    sf::Text m_score2Text;
     double m_ballVelocity;
+    sf::Font m_font;
 
     void update(const std::vector<sf::Event>& events, const sf::Time& elapsed);
     void assignControls();

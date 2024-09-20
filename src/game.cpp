@@ -21,11 +21,28 @@ Game::Game(float extentX, float extentY, float player1Size, float player2Size, i
       m_renderer(&m_window, m_gameState),
       m_pLeft(sf::Vector2f{20.0f, extentY/2}, player1Size, 10.0f),
       m_pRight(sf::Vector2f{extentX-20.0f, extentY/2}, player2Size, 10.0f),
-      m_score1(0), m_score2(0), m_ballVelocity(ballVelocity)
+      m_score1(0), m_score2(0), m_ballVelocity(ballVelocity), m_score1Text(), m_score2Text()
     {
         srand(0);
+        if (!m_font.loadFromFile("HelveticaNeue.ttc")) {
+            std::cerr << "Error loading font\n";
+        }
+        m_score1Text.setFont(m_font);
+        m_score1Text.setString("0");
+        m_score1Text.setCharacterSize(24); 
+        m_score1Text.setFillColor(sf::Color::White);
+        m_score1Text.setPosition(10.0f, 10.0f); // top-left corner
+
+        m_score2Text.setFont(m_font);
+        m_score2Text.setString("0");
+        m_score2Text.setCharacterSize(24);
+        m_score2Text.setFillColor(sf::Color::White);
+        m_score2Text.setPosition(extentX - 30.0f, 10.0f); // top-right corner
+
         m_gameState.addDrawable(&m_pLeft.getShape());
         m_gameState.addDrawable(&m_pRight.getShape());
+        m_gameState.addDrawable(&m_score1Text);
+        m_gameState.addDrawable(&m_score2Text);
         m_pLeft.addObserver(&m_gameState);
         m_pRight.addObserver(&m_gameState);
         m_renderer.display();
@@ -107,9 +124,11 @@ bool Game::handleCollisions(const sf::Time& elapsed){
         return false;
     }
     if (ballBounds.left < fieldBounds.left){
-        m_score1++;
-    } else {
         m_score2++;
+        m_score2Text.setString(std::to_string(m_score2));
+    } else {
+        m_score1++;
+        m_score1Text.setString(std::to_string(m_score1));
     }
     addBall(m_ballVelocity); //also removes and deregisters the old ball
     return true;
