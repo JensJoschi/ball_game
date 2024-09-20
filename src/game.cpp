@@ -86,11 +86,31 @@ void Game::update(const std::vector<sf::Event>& events, const sf::Time& elapsed)
 }
 
 void Game::assignControls(){
-    PlayerKBSetupParams p1Params{250.0, sf::Keyboard::Key::W , sf::Keyboard::Key::S}; //temporary
+    std::cout << "Player 1, please enter up key" << std::endl;
+    sf::Keyboard::Key upKey = getKeyPressed();
+    std::cout << "Player 1, please enter down key" << std::endl;
+    sf::Keyboard::Key downKey = getKeyPressed();
+    PlayerKBSetupParams p1Params{250.0, upKey , downKey};
     m_c1 = std::make_unique<PlayerKB>(p1Params);
 
-    PlayerKBSetupParams p2Params{250.0,  sf::Keyboard::Key::Up , sf::Keyboard::Key::Down};
+    std::cout << "Player 2, please enter up key" << std::endl;
+    upKey = getKeyPressed();
+    std::cout << "Player 2, please enter down key" << std::endl;
+    downKey = getKeyPressed();
+    PlayerKBSetupParams p2Params{250.0, upKey , downKey};
     m_c2 = std::make_unique<PlayerKB>(p2Params);
+
+}
+
+sf::Keyboard::Key Game::getKeyPressed(){
+    while (true){
+        sf::Event event;
+        while (m_window.pollEvent(event)) {
+            if (event.type == sf::Event::KeyPressed) {
+                return event.key.code;
+            }
+        }
+    }
 }
 
 void Game::addBall(double speed){

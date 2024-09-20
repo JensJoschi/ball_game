@@ -48,6 +48,7 @@ class Game{
 
     void update(const std::vector<sf::Event>& events, const sf::Time& elapsed);
     void assignControls();
+    sf::Keyboard::Key getKeyPressed();
     void addBall(double speed);
     bool handleCollisions(const sf::Time& elapsed);
     void movePlayer(Paddle& paddle, Controller* control, const std::vector<sf::Event>& events, const sf::Time& elapsed);
