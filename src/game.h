@@ -1,5 +1,4 @@
-﻿#ifndef GAME_H
-#define GAME_H
+﻿#pragma once
 
 #include "ball.h"
 #include "paddle.h"
@@ -54,4 +53,3 @@ class Game{
     void movePlayer(Paddle& paddle, Controller* control, const std::vector<sf::Event>& events, const sf::Time& elapsed);
 };
 
-#endif // FIELD_H

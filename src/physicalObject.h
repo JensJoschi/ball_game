@@ -1,5 +1,4 @@
-#ifndef PHYSICALOBJECT_H
-#define PHYSICALOBJECT_H
+#pragma once
 
 #include "observer.h"
 /** @cond */
@@ -36,5 +35,3 @@ class PhysicalObject {
 	 */
 	void notifyPositionChange() const;
 };
-
-#endif // PHYSICALOBJECT_H

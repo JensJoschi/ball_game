@@ -1,5 +1,4 @@
-#ifndef COMMAND_H
-#define COMMAND_H
+#pragma once
 
 #include "physicalObject.h"
 /** @cond */
@@ -26,5 +25,3 @@ class downCommand : public Command{
     downCommand(double moveBy): Command(moveBy){}
     void execute(PhysicalObject&, const sf::Time& elapsed) override;
 };
-
-#endif // COMMAND_H

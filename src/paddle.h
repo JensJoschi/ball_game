@@ -1,5 +1,4 @@
-﻿#ifndef PADDLE_H
-#define PADDLE_H
+﻿#pragma once
 
 #include "physicalObject.h"
 /** @cond */
@@ -24,5 +23,3 @@ class Paddle: public PhysicalObject {
     }
     ~Paddle() = default;
 };
-
-#endif // PADDLE_H

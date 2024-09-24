@@ -1,5 +1,4 @@
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#pragma once
 
 #include "command.h"
 /** @cond */
@@ -19,4 +18,3 @@ class Controller{
     std::unique_ptr<Command> up;
     std::unique_ptr<Command> down;
 };
-#endif // CONTROLLER_H

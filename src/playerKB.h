@@ -1,5 +1,4 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#pragma once
 
 #include "controller.h"
 #include "command.h"
@@ -23,5 +22,3 @@ class PlayerKB : public Controller{
     private:
     PlayerKBSetupParams m_params;
 };
-
-#endif // PLAYER_H

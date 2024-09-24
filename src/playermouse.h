@@ -1,5 +1,4 @@
-#ifndef MOUSE_H
-#define MOUSE_H
+#pragma once
 
 #include "controller.h"
 #include "command.h"
@@ -18,5 +17,3 @@ class PlayerMouse : public Controller{
     sf::Vector2i m_previousMouse;
     const sf::Window& m_win;
 };
-
-#endif // MOUSE_H

@@ -1,5 +1,4 @@
-﻿#ifndef BALL_H
-#define BALL_H
+﻿#pragma once
 
 #include "physicalObject.h"
 /** @cond */
@@ -34,6 +33,3 @@ class Ball: public PhysicalObject {
     double m_direction; //radians
     double m_velocity;
 };
-
-
-#endif // BALL_H
