@@ -7,18 +7,18 @@
 TEST(GameStateTest, crationAndDeletion){
     GameState gs;
     Renderer* r = new Renderer(nullptr, gs);
+    ASSERT_EQ(r->getNoObjects(), 5);
     sf::RectangleShape* shape = new sf::RectangleShape(sf::Vector2f(10, 10));
-    gs.addDrawable(shape);
-    ASSERT_EQ(r->getNoObjects(), 1);
+    gs.addDrawable(items::BALL, shape);
+    ASSERT_EQ(gs.drawables[2], shape);
     gs.onDangle(shape);
-    ASSERT_EQ(r->getNoObjects(), 0);
-    gs.addDrawable(shape);
-    ASSERT_EQ(r->getNoObjects(), 1);
-    delete(shape); //destructor calls onDangle
-    ASSERT_EQ(r->getNoObjects(), 0);
+    ASSERT_EQ(gs.drawables[2], nullptr);
+    gs.addDrawable(items::P1, shape);
+    ASSERT_EQ(gs.drawables[0], shape);
+
 
     sf::CircleShape* circle = new sf::CircleShape(10);
-    gs.addDrawable(shape);
-    gs.onNotify(shape, circle);
-    ASSERT_EQ(r->getNoObjects(), 1); //is now a circle, not a rectangle
+    gs.addDrawable(items::SCORE1, circle);
+    gs.onNotify(circle, shape);
+    ASSERT_EQ(gs.drawables[3], shape);
 }

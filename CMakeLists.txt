@@ -8,4 +8,4 @@ if(NOT SRC_FILES) #promoted to parent scope, so tests can use it
     message(FATAL_ERROR "list of source files is empty")
 endif()
 enable_testing()
-# add_subdirectory(tests) 
+add_subdirectory(tests) 

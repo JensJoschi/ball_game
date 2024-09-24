@@ -13,8 +13,8 @@ class PhysObTest : public ::testing::Test {
     }
 };
 TEST_F(PhysObTest, buildTest){
-    auto s{ physob.getShape()};
-    auto c = s->getGlobalBounds();
+    auto& s{ physob.getShape()};
+    auto c = s.getGlobalBounds();
     EXPECT_NEAR(c.left, 0.0, tolerance);
     EXPECT_NEAR(c.top, 0.0, tolerance);
     EXPECT_NEAR(c.width, 1.0, tolerance);

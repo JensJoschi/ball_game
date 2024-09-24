@@ -7,6 +7,7 @@
 #include "playerKB.h"
 #include "playermouse.h"
 #include "renderer.h"
+#include "ai.h"
 
 /** @cond */
 #include <cmath>
@@ -40,10 +41,10 @@ Game::Game(float extentX, float extentY, float player1Size, float player2Size, i
         m_score2Text.setFillColor(sf::Color::White);
         m_score2Text.setPosition(extentX - 30.0f, 10.0f); // top-right corner
 
-        m_gameState.addDrawable(&m_pLeft.getShape());
-        m_gameState.addDrawable(&m_pRight.getShape());
-        m_gameState.addDrawable(&m_score1Text);
-        m_gameState.addDrawable(&m_score2Text);
+        m_gameState.addDrawable(items::P1, &m_pLeft.getShape());
+        m_gameState.addDrawable(items::P2, &m_pRight.getShape());
+        m_gameState.addDrawable(items::SCORE1, &m_score1Text);
+        m_gameState.addDrawable(items::SCORE2, &m_score2Text);
         m_pLeft.addObserver(&m_gameState);
         m_pRight.addObserver(&m_gameState);
         m_renderer.display();
@@ -100,7 +101,9 @@ void Game::assignControls(){
     // downKey = getKeyPressed();
     // PlayerKBSetupParams p2Params{250.0, upKey , downKey};
     // m_c2 = std::make_unique<PlayerKB>(p2Params);
-    m_c2 = std::make_unique<PlayerMouse>(250.0, m_window);
+
+    // m_c2 = std::make_unique<PlayerMouse>(250.0, m_window);
+    m_c2 = std::make_unique<AI>(1, m_gameState, items::P2);
 
 }
 
@@ -121,7 +124,7 @@ void Game::addBall(double speed){
     m_ball = std::make_unique<Ball>(sf::Vector2f{windowSize.x/2.0f, 
         windowSize.y/2.0f}, 10.0f, direction, speed);
     m_ball->addObserver(&m_gameState);
-    m_gameState.addDrawable(&m_ball->getShape());
+    m_gameState.addDrawable(items::BALL, &m_ball->getShape());
 }
 
 

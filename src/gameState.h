@@ -7,14 +7,18 @@
 #include <vector>
 /** @endcond */
 
+enum class items{
+    P1, P2, BALL, SCORE1, SCORE2
+};
+
 class GameState: public Observer{
     friend class Renderer;
     public: 
-    GameState() = default;
-    void addDrawable(const sf::Drawable* object);
+    GameState();
+    void addDrawable(items i, const sf::Drawable* newD);
     virtual void onNotify(const sf::Drawable* oldD, const sf::Drawable* newD) override;
-    virtual void onDangle(const sf::Drawable*) override;
-    protected:
+    virtual void onDangle(const sf::Drawable* selfSubject) override;
+    public:
     std::vector<const sf::Drawable*> drawables;
 };
 
