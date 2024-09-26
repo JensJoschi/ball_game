@@ -17,10 +17,16 @@ The PhysicalObject class contains the current shape and can be moved around. The
 
 Visibility and collision:  
 
-The PhysicalObject has a shape which is used for displaying and calculating collisions with other shapes. Some observer will be implemented later to allow drawing on screen, being visible to AI etc.
+The PhysicalObject has a shape which is used for displaying and calculating collisions with other shapes. GameState tracks the identity of all objects that are currently in the game. Renderer and AI can query the GameState to draw objects/to react to ball movement. This central registry ensures that all entities react to the same information and avoids coupling.
+When a Physicalobject is created, the registry is updated via the addDrawable function.
+
+In addition, GameState is an observer of PhysicalObject. This ensures that items remove themselves from GameState upon deletion, and it also allows easier replacing of a PhysicalObject's shape (e.g. turning circle into a rectangle). Currently the observer provides little benefit (except preventing some tricky errors), but is likely to become more relevant as the game expands. Of course, there will also be other kinds of observers in the future.
+
 
 Control:  
 
 Controllers fetch input (from players or AI) and are able to return (or queue) the commands. Game is responsible for matching controller outputs (commands) with a geometry (paddles). 
-Game may have its own way of interfering with the objects as well, e.g. using commands on ball to make the ball wiggle, or on paddles to prevent them from leaving the screen. This design allows abstract control of any object, by human, AI or the game environment without entangling the classes.
+Game may have its own way of interfering with the objects as well, e.g. using commands on ball to make the ball wiggle, or on paddles to prevent them from leaving the screen. This design allows abstract control of any object, by human, AI or the game environment without entangling the classes. Currently implemented controls are keyboard, mouse and AI. A main menu to choose from those different controls is not yet written.
 
+issues:
+- ball jumps a bit when hitting a wall, particularly noticeable if hitting at small angles
