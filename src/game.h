@@ -6,6 +6,7 @@
 #include "controller.h"
 #include "gameState.h"
 #include "renderer.h"
+#include "options.h"
 
 /** @cond */
 #include <memory>
@@ -22,14 +23,11 @@
     */
 class Game{
     public:
-    Game(float extentX, float extentY, float player1Size, float player2Size, int ballVelocity);
-
-    void start();
-
-    void run();
+    Game(const Options& options, sf::RenderWindow& window);
+    bool update(const std::vector<sf::Event>& events, const sf::Time& elapsed);
 
     private:
-    sf::RenderWindow m_window;
+    sf::RenderWindow* m_window;
     GameState m_gameState;
     Renderer m_renderer;
     std::unique_ptr<Controller> m_c1; 
@@ -45,9 +43,6 @@ class Game{
     double m_ballVelocity;
     sf::Font m_font;
 
-    void update(const std::vector<sf::Event>& events, const sf::Time& elapsed);
-    void assignControls();
-    sf::Keyboard::Key getKeyPressed();
     void addBall(double speed);
     bool handleCollisions(const sf::Time& elapsed);
     void movePlayer(Paddle& paddle, Controller* control, const std::vector<sf::Event>& events, const sf::Time& elapsed);
