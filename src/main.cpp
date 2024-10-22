@@ -10,19 +10,23 @@
 #include <iostream>
 #include <cassert>
 #include <memory>
+#include <cassert>
 
 enum Windows {MAIN_MENU, GAME, OPTIONS, KEYBINDINGS};
 
+//to move into game
 Controller* createController(Controls control, sf::RenderWindow& window){
-    //todo: integrate options, keybindings
+    //todo: integrate keybindings
+    PlayerKBSetupParams p{ 250.0, sf::Keyboard::W, sf::Keyboard::S };
     switch (control){
         case Controls::KB:
-            PlayerKBSetupParams p{250.0, sf::Keyboard::W, sf::Keyboard::S};
             return new PlayerKB(p);
         case Controls::MOUSE:
             return new PlayerMouse(250.0, window);
         case Controls::AI:
             // return new AI();
+			assert(false && "AI not implemented");
+			return nullptr;
         default:
             return nullptr;
     }
@@ -32,13 +36,13 @@ int main(){
     float width= 800.0;
     float height= 600.0;
     sf::RenderWindow window(sf::VideoMode(width, height), "Ball game");
-    Windows currentState {Windows::MAIN_MENU};
+    window.setFramerateLimit(60);
+
     Menu mainMenu(window);
     std::unique_ptr<Game> game = nullptr;
-    window.setFramerateLimit(60);
+    Options opt;
     sf::Clock clock;
-    Controller* p1 = nullptr;
-    Controller* p2 = nullptr;
+    Windows currentState{ Windows::MAIN_MENU };
 
     while (window.isOpen()) {
         sf::Time elapsed = clock.restart(); 
@@ -67,12 +71,7 @@ int main(){
                         currentState = OPTIONS;
                         break;
                     case MenuState::START:
-                        p1 = createController(mainMenu.getP1(), window);
-                        p2 = createController(mainMenu.getP2(), window);
-                        assert(p1);
-                        assert(p2);
-                        Options o; //to do
-                        game = std::make_unique<Game>(o, p1, p2, window); 
+                        game = std::make_unique<Game>(opt, createController(mainMenu.getP1(), window), createController(mainMenu.getP2(), window), window);
                         currentState = GAME;
                 }
                 break;
@@ -84,7 +83,13 @@ int main(){
                 }
                 break;
             case OPTIONS:
-            //...
+                //temporary, no error checking at all because will be replaced anyway
+				std::cout << "Please enter Size of player 1: "; 
+				std::cin >> opt.player1Size;
+				std::cout << "Please enter Size of player 2: ";
+				std::cin >> opt.player2Size;
+				std::cout << "Please enter Ball velocity: ";
+				std::cin >> opt.ballVelocity;
                 currentState = MAIN_MENU;
                 break;
             case KEYBINDINGS:

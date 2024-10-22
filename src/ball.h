@@ -4,7 +4,7 @@
 /** @cond */
 #include <SFML/Graphics.hpp>
 /** @endcond */
-
+#define M_PI 3.14159265358979323846
 /*! 
     *  \brief Ball class
     *  \details

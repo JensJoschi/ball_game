@@ -18,11 +18,9 @@ MenuState Menu::update(const std::vector<sf::Event>& events){
                 case sf::Keyboard::Left:
                     if (highlighted == MenuState::P1) {
                         m_p1 = decrementEnum(m_p1, Controls::COUNT);
-//                        options.setP1(m_p1);
                     }
                     if (highlighted == MenuState::P2) {
                         m_p2 = decrementEnum(m_p2, Controls::COUNT);
-//                        options.setP2(m_p2);
                     }
                     break;
                 case sf::Keyboard::Right:

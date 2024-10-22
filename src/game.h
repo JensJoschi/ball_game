@@ -23,7 +23,7 @@
     */
 class Game{
     public:
-    Game(const Options& options, sf::RenderWindow& window);
+    Game(const Options& options,Controller* p1, Controller* p2, sf::RenderWindow& window);
     bool update(const std::vector<sf::Event>& events, const sf::Time& elapsed);
 
     private:

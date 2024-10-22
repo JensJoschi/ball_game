@@ -17,7 +17,7 @@
 #include <SFML/Graphics.hpp>
 /** @endcond */
 
-Game::Game(const Options& options, sf::RenderWindow& window)
+Game::Game(const Options& options, Controller* p1, Controller* p2, sf::RenderWindow& window)
     : m_window(&window),
       m_gameState(),
       m_renderer(m_window, m_gameState),
