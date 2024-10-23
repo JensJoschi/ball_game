@@ -7,13 +7,19 @@
 #include <vector>
 /** @endcond */
 
+
+struct PlayerMouseParams : ControllerSettings {
+    const sf::Window& m_win;
+};
+
+
 class PlayerMouse : public Controller{
     public:
-    PlayerMouse(float sensitivity, const sf::Window& window); 
+    PlayerMouse(const PlayerMouseParams* opt); 
     PlayerMouse() = delete;
     Command* action(const std::vector<sf::Event>& events) override;
 
     private:
+    const PlayerMouseParams* m_params;
     sf::Vector2i m_previousMouse;
-    const sf::Window& m_win;
 };

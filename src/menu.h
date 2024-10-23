@@ -1,3 +1,5 @@
+#pragma once
+
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "options.h"
@@ -22,8 +24,8 @@ class Menu{
     public:
     Menu(sf::RenderWindow& window);
     MenuState update(const std::vector<sf::Event>& events);
-    const Controls& getP1() const;
-    const Controls& getP2() const;
+    Controls getP1() const;
+    Controls getP2() const;
     
     private:
     void display();

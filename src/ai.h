@@ -8,13 +8,17 @@
 #include <vector>
 /** @endcond */
 
+struct AISetupParams : ControllerSettings {
+	const GameState* state;
+	items m_own;
+};
+
 class AI : public Controller{
     public:
-    AI(int difficulty, const GameState& state, items own); 
+    AI(const AISetupParams* opt); 
     AI() = delete;
     Command* action(const std::vector<sf::Event>& events) override;
 
     private:
-    const GameState& state;
-    items own;
+	const AISetupParams* m_params;
 };

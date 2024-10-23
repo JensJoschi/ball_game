@@ -12,25 +12,7 @@
 #include <memory>
 #include <cassert>
 
-enum Windows {MAIN_MENU, GAME, OPTIONS, KEYBINDINGS};
-
-//to move into game
-Controller* createController(Controls control, sf::RenderWindow& window){
-    //todo: integrate keybindings
-    PlayerKBSetupParams p{ 250.0, sf::Keyboard::W, sf::Keyboard::S };
-    switch (control){
-        case Controls::KB:
-            return new PlayerKB(p);
-        case Controls::MOUSE:
-            return new PlayerMouse(250.0, window);
-        case Controls::AI:
-            // return new AI();
-			assert(false && "AI not implemented");
-			return nullptr;
-        default:
-            return nullptr;
-    }
-}
+enum Windows {MAIN_MENU, GAME, OPTIONS, INPUTSETTINGS};
 
 int main(){
     float width= 800.0;
@@ -54,24 +36,30 @@ int main(){
             events.push_back(event);
         }
         window.clear();
-        bool keysOfP1 = true;
+        bool changingP1 = true;
 
         switch (currentState){
             case MAIN_MENU:
                 switch (mainMenu.update(events)){
                     case MenuState::P1:
-                        currentState = KEYBINDINGS;
-                        keysOfP1 = true;
+                        currentState = INPUTSETTINGS;
+                        changingP1 = true;
+						//inputSettings.setPlayer(true, mainMenu.getP1());
                         break;
                     case MenuState::P2:
-                        currentState = KEYBINDINGS;
-                        keysOfP1 = false;
+                        currentState = INPUTSETTINGS;
+                        changingP1 = false;
+                        //inputSettings.setPlayer(false,  mainMenu.getP2());
                         break;
                     case MenuState::OPTIONS:
                         currentState = OPTIONS;
                         break;
                     case MenuState::START:
-                        game = std::make_unique<Game>(opt, createController(mainMenu.getP1(), window), createController(mainMenu.getP2(), window), window);
+                        //temporary:
+						PlayerKBSetupParams p1params{250.0, sf::Keyboard::W, sf::Keyboard::S };
+						PlayerMouseParams p2params{250.0, window};
+                        game = std::make_unique<Game>(opt, std::make_pair(mainMenu.getP1(), &p1params), std::make_pair(mainMenu.getP2(), &p2params), window);
+                        //game = std::make_unique<Game>(opt, inputSettings.getP1(), inputSettings.getP2(), window);
                         currentState = GAME;
                 }
                 break;
@@ -92,9 +80,10 @@ int main(){
 				std::cin >> opt.ballVelocity;
                 currentState = MAIN_MENU;
                 break;
-            case KEYBINDINGS:
-            //menu.changeKB(keysOfP1, keybindings->update(keysOfP1));
-                currentState = MAIN_MENU;
+            case INPUTSETTINGS:
+                //if (inputSettings->update(events) {
+                    currentState = MAIN_MENU;
+                //}
                 break;
             default:
                 break;

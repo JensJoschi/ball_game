@@ -1,12 +1,14 @@
 #include "ai.h"
 
-AI::AI(int difficulty, const GameState& gs, items own): Controller(static_cast<double> (difficulty * 100)), state(gs), own(own) {
-    assert(difficulty > 0);
+AI::AI(const AISetupParams* opt): Controller(opt), m_params(opt) {
+	assert(m_params->m_own == items::P1 || m_params->m_own == items::P2);
+	assert(m_params->state);
+
 }
 
 Command* AI::action(const std::vector<sf::Event>& events){
-    auto ball = dynamic_cast<const sf::Transformable*>(state.drawables[static_cast<int>(items::BALL)]);
-    auto ownID = dynamic_cast<const sf::Transformable*>(state.drawables[static_cast<int>(own)]);
+    auto ball = dynamic_cast<const sf::Transformable*>(m_params->state->drawables[(static_cast<int>(items::BALL))]);
+    auto ownID = dynamic_cast<const sf::Transformable*>(m_params->state->drawables[static_cast<int>(m_params->m_own)]);
 
     assert (ball && ownID);
 

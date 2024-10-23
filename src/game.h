@@ -7,6 +7,7 @@
 #include "gameState.h"
 #include "renderer.h"
 #include "options.h"
+#include "menu.h" //for enum Controls
 
 /** @cond */
 #include <memory>
@@ -23,7 +24,10 @@
     */
 class Game{
     public:
-    Game(const Options& options,Controller* p1, Controller* p2, sf::RenderWindow& window);
+
+
+    //Game(const Options& options, Controller* p1, Controller* p2, sf::RenderWindow& window);
+	explicit Game(const Options& options, std::pair<Controls, ControllerSettings*> p1, std::pair<Controls, ControllerSettings*> p2, sf::RenderWindow& window);
     bool update(const std::vector<sf::Event>& events, const sf::Time& elapsed);
 
     private:
@@ -46,5 +50,6 @@ class Game{
     void addBall(double speed);
     bool handleCollisions(const sf::Time& elapsed);
     void movePlayer(Paddle& paddle, Controller* control, const std::vector<sf::Event>& events, const sf::Time& elapsed);
+    Controller* createController(Controls control, ControllerSettings* opt, sf::RenderWindow& window);
 };
 

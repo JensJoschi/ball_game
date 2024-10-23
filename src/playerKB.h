@@ -7,18 +7,17 @@
 #include <vector>
 /** @endcond */
 
-struct PlayerKBSetupParams{
-    double m_sensitivity;
+struct PlayerKBSetupParams: ControllerSettings {
     sf::Keyboard::Key m_upKey;
     sf::Keyboard::Key m_downKey;
 };
 
 class PlayerKB : public Controller{
     public:
-    PlayerKB(const PlayerKBSetupParams& params); 
+    PlayerKB(const PlayerKBSetupParams* opt);
     PlayerKB() = delete;
     Command* action(const std::vector<sf::Event>& events) override;
 
     private:
-    PlayerKBSetupParams m_params;
+    const PlayerKBSetupParams* m_params;
 };

@@ -2,7 +2,7 @@
 #include <sfml/Graphics.hpp>
 #include <iostream>
 
-Menu::Menu(sf::RenderWindow& window):highlighted(MenuState::P1), m_p1(Controls::AI), m_p2(Controls::AI) {}
+Menu::Menu(sf::RenderWindow& window) :highlighted(MenuState::P1), m_p1(Controls::KB), m_p2(Controls::KB) {}
 
 MenuState Menu::update(const std::vector<sf::Event>& events){
     std::cout << "Menu points at: " << static_cast<int>(highlighted) << std::endl;
@@ -54,5 +54,5 @@ void Menu::display(){
     std::cout << "Highlighted: " << static_cast<int>(highlighted) << std::endl;
 }
 
-const Controls& Menu::getP1() const {return m_p1;}
-const Controls& Menu::getP2() const {return m_p2;}
+Controls Menu::getP1() const {return m_p1;}
+Controls Menu::getP2() const {return m_p2;}
