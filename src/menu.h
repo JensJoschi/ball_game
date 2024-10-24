@@ -5,12 +5,12 @@
 #include "options.h"
 
 enum class MenuState{
-    NONE  = 0,
-    P1    = 1,
-    P2    = 2, 
-    OPTIONS = 3,
-    START = 4,
-    COUNT = 5,
+    P1    = 0,
+    P2    = 1, 
+    OPTIONS = 2,
+    START = 3,
+    COUNT = 4,
+    NONE = 5
     };
 
 enum class Controls{
@@ -29,6 +29,8 @@ class Menu{
     
     private:
     void display();
+	void drawMenuStateText();
+
     template <typename Enum>
     static Enum incrementEnum(Enum value, Enum count) {
         return static_cast<Enum>((static_cast<int>(value) + 1) % static_cast<int>(count));
@@ -38,9 +40,15 @@ class Menu{
         return static_cast<Enum>((static_cast<int>(value) - 1 + static_cast<int>(count)) % static_cast<int>(count));
     }
 
+	std::string castEnumToString(Controls c);
+	std::string castEnumToString(MenuState c);
+
     Controls m_p1;
     Controls m_p2;
     MenuState highlighted;
+    sf::RenderWindow& m_window;
+    sf::Font m_font;
+    std::vector<sf::Text> m_menuTexts;
 };
 // void Game::assignControls(){
 //     std::cout << "Player 1, please enter up key" << std::endl;

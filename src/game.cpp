@@ -28,7 +28,7 @@ Game::Game(const Options& options, std::pair<Controls, ControllerSettings*> p1, 
   m_c1(createController(p1.first, p1.second, window)), m_c2(createController(p2.first, p2.second, window))
 {
     srand(0);
-    if (!m_font.loadFromFile("HelveticaNeue.ttc")) {
+    if (!m_font.loadFromFile("arial.ttf")) {
         std::cerr << "Error loading font\n";
     }
     m_score1Text.setFont(m_font);
