@@ -22,7 +22,7 @@ int main(){
 
     Menu mainMenu(window);
     std::unique_ptr<Game> game = nullptr;
-    Options opt;
+    std::unique_ptr<OptionsMenu> optionsMenu{ std::make_unique<OptionsMenu>(window, Options{}) };
     sf::Clock clock;
     Windows currentState{ Windows::MAIN_MENU };
 
@@ -58,7 +58,7 @@ int main(){
                         //temporary:
 						PlayerKBSetupParams p1params{250.0, sf::Keyboard::W, sf::Keyboard::S };
 						PlayerMouseParams p2params{250.0, window};
-                        game = std::make_unique<Game>(opt, std::make_pair(mainMenu.getP1(), &p1params), std::make_pair(mainMenu.getP2(), &p2params), window);
+                        game = std::make_unique<Game>(optionsMenu->getOptions(), std::make_pair(mainMenu.getP1(), &p1params), std::make_pair(mainMenu.getP2(), &p2params), window);
                         //game = std::make_unique<Game>(opt, inputSettings.getP1(), inputSettings.getP2(), window);
                         currentState = GAME;
                 }
@@ -71,14 +71,9 @@ int main(){
                 }
                 break;
             case OPTIONS:
-                //temporary, no error checking at all because will be replaced anyway
-				std::cout << "Please enter Size of player 1: "; 
-				std::cin >> opt.player1Size;
-				std::cout << "Please enter Size of player 2: ";
-				std::cin >> opt.player2Size;
-				std::cout << "Please enter Ball velocity: ";
-				std::cin >> opt.ballVelocity;
-                currentState = MAIN_MENU;
+				if (optionsMenu->update(events)) {
+				currentState = MAIN_MENU;
+                }
                 break;
             case INPUTSETTINGS:
                 //if (inputSettings->update(events) {
