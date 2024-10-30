@@ -7,7 +7,7 @@
 #include "gameState.h"
 #include "renderer.h"
 #include "options.h"
-#include "menu.h" //for enum Controls
+#include "mainMenu.h" //for enum Controls
 
 /** @cond */
 #include <memory>

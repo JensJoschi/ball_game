@@ -1,6 +1,6 @@
 #include "game.h"
 #include "options.h"
-#include "menu.h"
+#include "mainMenu.h"
 #include "controller.h"
 #include "playerKB.h"
 #include "playermouse.h"
@@ -20,7 +20,7 @@ int main(){
     sf::RenderWindow window(sf::VideoMode(width, height), "Ball game");
     window.setFramerateLimit(60);
 
-    Menu mainMenu(window);
+    MainMenu mainMenu(window);
     std::unique_ptr<Game> game = nullptr;
     std::unique_ptr<OptionsMenu> optionsMenu{ std::make_unique<OptionsMenu>(window, Options{}) };
     sf::Clock clock;
@@ -41,26 +41,29 @@ int main(){
         switch (currentState){
             case MAIN_MENU:
                 switch (mainMenu.update(events)){
-                    case MenuState::P1:
-                        currentState = INPUTSETTINGS;
-                        changingP1 = true;
-						//inputSettings.setPlayer(true, mainMenu.getP1());
-                        break;
-                    case MenuState::P2:
-                        currentState = INPUTSETTINGS;
-                        changingP1 = false;
-                        //inputSettings.setPlayer(false,  mainMenu.getP2());
-                        break;
-                    case MenuState::OPTIONS:
-                        currentState = OPTIONS;
-                        break;
-                    case MenuState::START:
-                        //temporary:
-						PlayerKBSetupParams p1params{250.0, sf::Keyboard::W, sf::Keyboard::S };
-						PlayerMouseParams p2params{250.0, window};
-                        game = std::make_unique<Game>(optionsMenu->getOptions(), std::make_pair(mainMenu.getP1(), &p1params), std::make_pair(mainMenu.getP2(), &p2params), window);
-                        //game = std::make_unique<Game>(opt, inputSettings.getP1(), inputSettings.getP2(), window);
-                        currentState = GAME;
+                case 0:
+					currentState = MAIN_MENU;
+					break;
+                case 1:
+                    currentState = INPUTSETTINGS;
+                    changingP1 = true;
+					//inputSettings.setPlayer(true, mainMenu.getP1());
+                    break;
+                case 2:
+                    currentState = INPUTSETTINGS;
+                    changingP1 = false;
+                    //inputSettings.setPlayer(false,  mainMenu.getP2());
+                    break;
+                case 3:
+                    currentState = OPTIONS;
+                    break;
+                case 4:
+                    //temporary:
+				    PlayerKBSetupParams p1params{250.0, sf::Keyboard::W, sf::Keyboard::S };
+					PlayerMouseParams p2params{250.0, window};
+                    game = std::make_unique<Game>(optionsMenu->getOptions(), std::make_pair(mainMenu.getP1(), &p1params), std::make_pair(mainMenu.getP2(), &p2params), window);
+                    //game = std::make_unique<Game>(opt, inputSettings.getP1(), inputSettings.getP2(), window);
+                    currentState = GAME;
                 }
                 break;
             case GAME:

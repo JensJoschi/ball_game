@@ -2,35 +2,17 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "options.h"
+#include <string>
 
-enum class MenuState{
-    P1    = 0,
-    P2    = 1, 
-    OPTIONS = 2,
-    START = 3,
-    COUNT = 4,
-    NONE = 5
-    };
-
-enum class Controls{
-    KB    = 0, 
-    MOUSE = 1,
-    AI    = 2,
-    COUNT = 3
-};
-
-class Menu{
-    public:
-    Menu(sf::RenderWindow& window);
-    MenuState update(const std::vector<sf::Event>& events);
-    Controls getP1() const;
-    Controls getP2() const;
-    
-    private:
-    void display();
-	void drawMenuStateText();
-
+class MenuBase {
+public:
+    MenuBase(sf::RenderWindow& window, const std::vector<std::string>& items);
+    virtual ~MenuBase() = default;
+	int update(const std::vector<sf::Event>& events);
+	void display();
+	void highlight();
+	virtual int handleKey(sf::Event event) = 0;
+protected:
     template <typename Enum>
     static Enum incrementEnum(Enum value, Enum count) {
         return static_cast<Enum>((static_cast<int>(value) + 1) % static_cast<int>(count));
@@ -39,17 +21,16 @@ class Menu{
     static Enum decrementEnum(Enum value, Enum count) {
         return static_cast<Enum>((static_cast<int>(value) - 1 + static_cast<int>(count)) % static_cast<int>(count));
     }
-
-	std::string castEnumToString(Controls c);
-	std::string castEnumToString(MenuState c);
-
-    Controls m_p1;
-    Controls m_p2;
-    MenuState highlighted;
+    int highlighted;
     sf::RenderWindow& m_window;
-    sf::Font m_font;
     std::vector<sf::Text> m_menuTexts;
+
+private:
+    sf::Font m_font;
 };
+
+
+
 // void Game::assignControls(){
 //     std::cout << "Player 1, please enter up key" << std::endl;
 //     sf::Keyboard::Key upKey = getKeyPressed();
