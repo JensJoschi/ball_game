@@ -3,6 +3,7 @@
 #include "playerKB.h"
 #include "playermouse.h"
 #include "ai.h"
+#include "controllerSetup.h"
 #include "mainMenu.h"
 #include "gameState.h" //needed for enum items
 #include "game.h"

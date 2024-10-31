@@ -4,13 +4,11 @@
 #include "paddle.h"
 #include "observer.h"
 #include "controller.h"
+#include "controllerSetup.h"
 #include "gameState.h"
 #include "renderer.h"
 #include "options.h"
-#include "mainMenu.h" //for enum Controls
-#include "playermouse.h"
-#include "playerKB.h"
-#include "ai.h"
+#include "enums.h"
 
 /** @cond */
 #include <memory>
@@ -20,11 +18,7 @@
 #include <variant>
 /** @endcond */
 
-struct ControllerSetup {
-    Controls control;
-	ControllerSettings generalSettings;
-	std::variant<PlayerMouseParams, PlayerKBSetupParams, AISetupParams> specificSettings;
-};
+
 /*! 
     *  \brief Game class
     *  \details

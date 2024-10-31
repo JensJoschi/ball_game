@@ -1,5 +1,7 @@
 #include "game.h"
+#include "enums.h"
 #include "controller.h"
+#include "controllerSetup.h"
 #include "ball.h"
 #include "paddle.h"
 #include "observer.h"

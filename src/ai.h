@@ -3,6 +3,7 @@
 #include "controller.h"
 #include "command.h"
 #include "gameState.h"
+#include "enums.h"
 /** @cond */
 #include <SFML/Graphics.hpp>
 #include <vector>

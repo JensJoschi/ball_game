@@ -1,5 +1,7 @@
 #pragma once
 #include "observer.h"
+#include "enums.h"
+
 /** @cond */
 #include <SFML/Graphics.hpp>
 #include <map>
@@ -7,9 +9,7 @@
 #include <vector>
 /** @endcond */
 
-enum class items{
-    P1, P2, BALL, SCORE1, SCORE2
-};
+
 
 class GameState: public Observer{
     public: 

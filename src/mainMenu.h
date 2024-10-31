@@ -1,19 +1,11 @@
 #pragma once
 #include "menuBase.h"
-
+#include "enums.h"
 /** @cond */
 #include <sfml/Graphics.hpp>
 #include <vector>
 #include <string>
 /** @endcond */
-
-
-enum class Controls {
-    KB = 0,
-    MOUSE = 1,
-    AI = 2,
-    COUNT = 3
-};
 
 
 class MainMenu : public MenuBase {

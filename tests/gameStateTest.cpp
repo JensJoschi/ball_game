@@ -1,4 +1,5 @@
 #include "gameState.h"
+#include "enums.h"
 #include "renderer.h"
 #include <gtest/gtest.h>
 #include <SFML/Graphics.hpp>

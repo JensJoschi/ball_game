@@ -1,5 +1,16 @@
 #include "ai.h"
 
+#include "controller.h"
+#include "gameState.h"
+#include "enums.h"
+#include "command.h"
+
+#include <cassert>
+#include <memory>
+#include <SFML/Graphics.hpp>
+#include <vector>
+
+
 AI::AI(const ControllerSettings general, const AISetupParams specific) : Controller(general),
 m_params(specific) {
 

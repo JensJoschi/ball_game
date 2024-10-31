@@ -1,4 +1,5 @@
 #include "gameState.h"
+#include "enums.h"
 /** @cond */
 #include <cassert>
 #include <algorithm>
