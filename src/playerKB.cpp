@@ -9,17 +9,15 @@
 #include <SFML/Graphics.hpp>
 /** @endcond */
 
-PlayerKB::PlayerKB(const PlayerKBSetupParams* opt) 
-    : Controller(opt), m_params(opt) {
-    assert(opt);
-}
+PlayerKB::PlayerKB(const ControllerSettings general, const PlayerKBSetupParams specific)
+    : Controller(general), m_params(specific) {}
 
 Command* PlayerKB::action(const std::vector<sf::Event>& events){
     assert (up != nullptr && down != nullptr);
     if (events.empty()) return nullptr;
     for (const auto& event : events){
-        if (event.type == sf::Event::KeyPressed && event.key.code == m_params->m_upKey) return (up.get());
-        else if (event.type == sf::Event::KeyPressed && event.key.code == m_params->m_downKey) return (down.get());
+        if (event.type == sf::Event::KeyPressed && event.key.code == m_params.m_upKey) return (up.get());
+        else if (event.type == sf::Event::KeyPressed && event.key.code == m_params.m_downKey) return (down.get());
     }
     return nullptr;
 }

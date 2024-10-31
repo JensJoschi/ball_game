@@ -18,14 +18,14 @@
 /** @endcond */
 
 
-Game::Game(const Options& options, std::pair<Controls, ControllerSettings*> p1, std::pair<Controls, ControllerSettings*> p2, sf::RenderWindow& window)
+Game::Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::RenderWindow& window)
 : m_window(&window),
   m_gameState(),
   m_renderer(m_window, m_gameState),
   m_pLeft(sf::Vector2f{20.0f, static_cast<float>(m_window->getSize().y/2.0)}, options.player1Size, 10.0f),
   m_pRight(sf::Vector2f{m_window->getSize().x - 20.0f,static_cast<float>(m_window->getSize().y/2.0)}, options.player2Size, 10.0f),
   m_score1(0), m_score2(0), m_ballVelocity(options.ballVelocity), m_score1Text(), m_score2Text(),
-  m_c1(createController(p1.first, p1.second, window)), m_c2(createController(p2.first, p2.second, window))
+  m_c1(createController(std::move(p1), window)), m_c2(createController(std::move(p2), window))
 {
     srand(0);
     if (!m_font.loadFromFile("arial.ttf")) {
@@ -49,6 +49,11 @@ Game::Game(const Options& options, std::pair<Controls, ControllerSettings*> p1, 
     m_gameState.addDrawable(items::SCORE2, &m_score2Text);
     m_pLeft.addObserver(&m_gameState);
     m_pRight.addObserver(&m_gameState);
+
+    auto c = dynamic_cast<AI*> (m_c1.get());
+	if (c) c->connect(&m_gameState);
+	c = dynamic_cast<AI*> (m_c2.get());
+	if (c) c->connect(&m_gameState);
 
     addBall(m_ballVelocity);
     m_renderer.display();
@@ -131,20 +136,20 @@ void Game::movePlayer(Paddle& paddle, Controller* control, const std::vector<sf:
     }
 }
 
-Controller* Game::createController(Controls control, ControllerSettings* opt, sf::RenderWindow& window) {
-   //temporary
-   PlayerKBSetupParams* p = new PlayerKBSetupParams{ 250.0, sf::Keyboard::W, sf::Keyboard::S };
-   PlayerMouseParams* m = new PlayerMouseParams{ 250.0, window };
-   //AISetupParams a{ nullptr, items::P1 };
-    switch (control) {
-    case Controls::KB:
-        return new PlayerKB(p);
-    case Controls::MOUSE:
-        return new PlayerMouse(m);
-    case Controls::AI:
-        // return new AI();
-        assert(false && "AI not implemented");
-        return nullptr;
+Controller* Game::createController(ControllerSetup setup, sf::RenderWindow& window) {
+    switch (setup.control) {
+    case Controls::KB: {
+		assert(std::holds_alternative<PlayerKBSetupParams>(setup.specificSettings));
+		return new PlayerKB(std::move(setup.generalSettings), std::move(std::get<PlayerKBSetupParams>(setup.specificSettings)));
+    }
+    case Controls::MOUSE:{
+		assert(std::holds_alternative<PlayerMouseParams>(setup.specificSettings));
+		return new PlayerMouse(std::move(setup.generalSettings), std::move(std::get<PlayerMouseParams>(setup.specificSettings)));
+    }
+    case Controls::AI:{
+		assert(std::holds_alternative<AISetupParams>(setup.specificSettings));
+		return new AI(std::move(setup.generalSettings), std::move(std::get<AISetupParams>(setup.specificSettings)));
+	}
     default:
         return nullptr;
     }

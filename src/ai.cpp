@@ -1,14 +1,16 @@
 #include "ai.h"
 
-AI::AI(const AISetupParams* opt): Controller(opt), m_params(opt) {
-	assert(m_params->m_own == items::P1 || m_params->m_own == items::P2);
-	assert(m_params->state);
+AI::AI(const ControllerSettings general, const AISetupParams specific) : Controller(general),
+m_params(specific) {
+
+	assert(m_params.m_own == items::P1 || m_params.m_own == items::P2);
 
 }
 
 Command* AI::action(const std::vector<sf::Event>& events){
-    auto ball = dynamic_cast<const sf::Transformable*>(m_params->state->drawables[(static_cast<int>(items::BALL))]);
-    auto ownID = dynamic_cast<const sf::Transformable*>(m_params->state->drawables[static_cast<int>(m_params->m_own)]);
+	assert(state);
+    auto ball = dynamic_cast<const sf::Transformable*>(state->drawables[(static_cast<int>(items::BALL))]);
+    auto ownID = dynamic_cast<const sf::Transformable*>(state->drawables[static_cast<int>(m_params.m_own)]);
 
     assert (ball && ownID);
 
@@ -17,4 +19,8 @@ Command* AI::action(const std::vector<sf::Event>& events){
     } else {
         return down.get();
     }
+}
+
+void AI::connect(const GameState* state) {
+	this->state = state;
 }

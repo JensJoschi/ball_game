@@ -5,6 +5,7 @@
 #include "playerKB.h"
 #include "playermouse.h"
 #include "ai.h"
+#include "inputSettings.h"
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -23,6 +24,7 @@ int main(){
     MainMenu mainMenu(window);
     std::unique_ptr<Game> game = nullptr;
     std::unique_ptr<OptionsMenu> optionsMenu{ std::make_unique<OptionsMenu>(window) };
+	std::unique_ptr<InputSettings> inputSettings{ std::make_unique<InputSettings>(window) };
     sf::Clock clock;
     Windows currentState{ Windows::MAIN_MENU };
 
@@ -58,11 +60,11 @@ int main(){
                     currentState = OPTIONS;
                     break;
                 case 4:
-                    //temporary:
-				    PlayerKBSetupParams p1params{250.0, sf::Keyboard::W, sf::Keyboard::S };
-					PlayerMouseParams p2params{250.0, window};
-                    game = std::make_unique<Game>(optionsMenu->getOptions(), std::make_pair(mainMenu.getP1(), &p1params), std::make_pair(mainMenu.getP2(), &p2params), window);
-                    //game = std::make_unique<Game>(opt, inputSettings.getP1(), inputSettings.getP2(), window);
+                    game = std::make_unique<Game>(
+                        optionsMenu->getOptions(), 
+                        std::move(inputSettings->getControllerSettings(mainMenu.getP1(), true)),
+						std::move(inputSettings->getControllerSettings(mainMenu.getP2(), false)),
+                        window);
                     currentState = GAME;
                 }
                 break;

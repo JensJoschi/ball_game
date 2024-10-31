@@ -8,15 +8,23 @@
 #include "renderer.h"
 #include "options.h"
 #include "mainMenu.h" //for enum Controls
+#include "playermouse.h"
+#include "playerKB.h"
+#include "ai.h"
 
 /** @cond */
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
+#include <variant>
 /** @endcond */
 
-
+struct ControllerSetup {
+    Controls control;
+	ControllerSettings generalSettings;
+	std::variant<PlayerMouseParams, PlayerKBSetupParams, AISetupParams> specificSettings;
+};
 /*! 
     *  \brief Game class
     *  \details
@@ -24,10 +32,8 @@
     */
 class Game{
     public:
-
-
     //Game(const Options& options, Controller* p1, Controller* p2, sf::RenderWindow& window);
-	explicit Game(const Options& options, std::pair<Controls, ControllerSettings*> p1, std::pair<Controls, ControllerSettings*> p2, sf::RenderWindow& window);
+	explicit Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::RenderWindow& window);
     bool update(const std::vector<sf::Event>& events, const sf::Time& elapsed);
 
     private:
@@ -50,6 +56,6 @@ class Game{
     void addBall(double speed);
     bool handleCollisions(const sf::Time& elapsed);
     void movePlayer(Paddle& paddle, Controller* control, const std::vector<sf::Event>& events, const sf::Time& elapsed);
-    Controller* createController(Controls control, ControllerSettings* opt, sf::RenderWindow& window);
+    Controller* createController(ControllerSetup setup, sf::RenderWindow& window);
 };
 

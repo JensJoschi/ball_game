@@ -6,8 +6,8 @@
 #include <cassert>
 /** @endcond */
 
-PlayerMouse::PlayerMouse(const PlayerMouseParams* opt)
-: Controller(opt), m_params(opt), m_previousMouse() {}
+PlayerMouse::PlayerMouse(const ControllerSettings general, const PlayerMouseParams specific)
+: Controller(general), m_params(specific), m_previousMouse() {}
 
 
 Command* PlayerMouse::action(const std::vector<sf::Event>& events){
@@ -24,7 +24,7 @@ Command* PlayerMouse::action(const std::vector<sf::Event>& events){
             }
         }
         else if (event.type == sf::Event::MouseLeft) {
-            sf::Mouse::setPosition(m_previousMouse, m_params->m_win);
+            sf::Mouse::setPosition(m_previousMouse, m_params.m_win);
         }
     }
     return nullptr;

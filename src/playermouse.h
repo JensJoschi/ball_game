@@ -8,18 +8,18 @@
 /** @endcond */
 
 
-struct PlayerMouseParams : ControllerSettings {
+struct PlayerMouseParams{
     const sf::Window& m_win;
 };
 
 
 class PlayerMouse : public Controller{
     public:
-    PlayerMouse(const PlayerMouseParams* opt); 
+    PlayerMouse(const ControllerSettings general, const PlayerMouseParams specific); 
     PlayerMouse() = delete;
     Command* action(const std::vector<sf::Event>& events) override;
 
     private:
-    const PlayerMouseParams* m_params;
+    const PlayerMouseParams m_params;
     sf::Vector2i m_previousMouse;
 };
