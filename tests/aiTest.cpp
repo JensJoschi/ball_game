@@ -10,7 +10,8 @@ TEST(aitest, movement){
     Paddle p1(sf::Vector2f(0, 0), 1.0, 0.1);
     gs.addDrawable(items::BALL, &ball.getShape());
     gs.addDrawable(items::P1, &p1.getShape());
-    AI ai(1, gs, items::P1);
+	AISetupParams params{ 1.0, &gs, items::P1 };
+    AI ai(&params);
     auto p1pos = static_cast<const sf::Shape*>(gs.drawables[static_cast<int>(items::P1)])->getPosition();
     EXPECT_EQ(p1pos.y, 0.0);
     auto ballpos = static_cast<const sf::Shape*>(gs.drawables[static_cast<int>(items::BALL)])->getPosition();

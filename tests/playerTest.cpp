@@ -8,13 +8,13 @@
 class PlayerTest : public ::testing::Test {
     protected:
     PlayerTest() {
-        PlayerKBSetupParams params{1.0, sf::Keyboard::Key::W, sf::Keyboard::Key::S};
-        player = new PlayerKB(params);
+        player = new PlayerKB(&params);
         }
     ~PlayerTest() {
         delete player;
     }
     PlayerKB* player;
+	PlayerKBSetupParams params{ 1.0, sf::Keyboard::Key::W, sf::Keyboard::Key::S };
 };
 
 TEST_F(PlayerTest, actionWithNoEvents) {

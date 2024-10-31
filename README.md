@@ -5,6 +5,12 @@ A ball is placed in the middle of a field. It moves into a random direction with
 
 The number of human players, AI difficulty (if applicable) and sides are chosen at startup. The game is over when the player aborts.
 
+
+# How to play
+In the main menu, use arrow keys on Player1 and Player2 to choose between Keyboard, Mouse and AI.
+Hit Return on Options to set further settings, or on Start to begin the game.
+Keys for Keyboard control are W and S for either player. An option to change keybindings will be added later.
+
 # class overview and design decisions  
 
 ![UML overview](/doc/UML.png)
