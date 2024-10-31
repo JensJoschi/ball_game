@@ -45,7 +45,6 @@ int MainMenu::handleKey(sf::Event event) {
     default:
         break;
     }
-    display();
     return 0;
 }
 

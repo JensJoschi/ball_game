@@ -22,7 +22,7 @@ int main(){
 
     MainMenu mainMenu(window);
     std::unique_ptr<Game> game = nullptr;
-    std::unique_ptr<OptionsMenu> optionsMenu{ std::make_unique<OptionsMenu>(window, Options{}) };
+    std::unique_ptr<OptionsMenu> optionsMenu{ std::make_unique<OptionsMenu>(window) };
     sf::Clock clock;
     Windows currentState{ Windows::MAIN_MENU };
 
