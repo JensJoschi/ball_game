@@ -1,9 +1,10 @@
 #pragma once
 #include "menuBase.h"
+/** @cond */
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <iostream>
-
+/** @endcond */
 
 struct Options {
     float player1Size{ 50.0 };
@@ -11,6 +12,11 @@ struct Options {
     int ballVelocity{ 50 };
 };
 
+/** @brief OptionsMenu class
+ *
+ * allows the player to change the game settings such as paddle size and ball velocity.
+ * Use arrow keys to increase/decrease the values.
+ */
 class OptionsMenu: public MenuBase {
 public:
 	OptionsMenu(sf::RenderWindow& window);

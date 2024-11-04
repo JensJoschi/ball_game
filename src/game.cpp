@@ -1,15 +1,17 @@
 #include "game.h"
-#include "enums.h"
+
+#include "ai.h"
+#include "ball.h"
+#include "command.h"
 #include "controller.h"
 #include "controllerSetup.h"
-#include "ball.h"
+#include "enums.h"
+#include "gameState.h"
+#include "options.h"
 #include "paddle.h"
-#include "observer.h"
-#include "command.h"
 #include "playerKB.h"
 #include "playermouse.h"
 #include "renderer.h"
-#include "ai.h"
 
 /** @cond */
 #include <cmath>

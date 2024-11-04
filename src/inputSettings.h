@@ -4,12 +4,18 @@
 #include "playermouse.h"
 #include "ai.h"
 #include "controllerSetup.h"
-#include "mainMenu.h"
-#include "gameState.h" //needed for enum items
-#include "game.h"
+#include "enums.h"
+
+/** @cond */
 #include <sfml/Graphics.hpp>
 #include <cassert>
+/** @endcond */
 
+
+/** @brief temporary InputSettings class
+ *
+ * mockup until InputSettings menu is implemented
+ */
 class InputSettings {
 
 public:

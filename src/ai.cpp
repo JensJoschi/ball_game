@@ -1,18 +1,15 @@
 #include "ai.h"
-
 #include "controller.h"
 #include "gameState.h"
 #include "enums.h"
 #include "command.h"
-
+/** @cond */
 #include <cassert>
-#include <memory>
 #include <SFML/Graphics.hpp>
-#include <vector>
-
+/** @endcond */
 
 AI::AI(const ControllerSettings general, const AISetupParams specific) : Controller(general),
-m_params(specific) {
+m_params(specific), state(nullptr) {
 
 	assert(m_params.m_own == items::P1 || m_params.m_own == items::P2);
 
@@ -33,5 +30,6 @@ Command* AI::action(const std::vector<sf::Event>& events){
 }
 
 void AI::connect(const GameState* state) {
+    assert(state);
 	this->state = state;
 }

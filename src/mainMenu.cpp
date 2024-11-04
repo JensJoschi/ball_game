@@ -13,7 +13,7 @@ MainMenu::MainMenu(sf::RenderWindow& window) : MenuBase(window, std::vector<std:
 
 int MainMenu::handleKey(sf::Event event) {
     switch (event.key.code) {
-    case sf::Keyboard::Left:
+	case sf::Keyboard::Left: //switch player 1/2 control
         if (highlighted == 0) {
             m_p1 = decrementEnum(m_p1, Controls::COUNT);
 			m_menuTexts[0].setString("Player 1: " + castEnumToString(m_p1));
@@ -23,7 +23,7 @@ int MainMenu::handleKey(sf::Event event) {
 			m_menuTexts[1].setString("Player 2: " + castEnumToString(m_p2));
         }
         break;
-    case sf::Keyboard::Right:
+	case sf::Keyboard::Right: //switch player 1/2 control
         if (highlighted == 0) {
             m_p1 = incrementEnum(m_p1, Controls::COUNT);
             m_menuTexts[0].setString("Player 1: " + castEnumToString(m_p1));
@@ -33,10 +33,10 @@ int MainMenu::handleKey(sf::Event event) {
             m_menuTexts[1].setString("Player 2: " + castEnumToString(m_p2));
         }
         break;
-    case sf::Keyboard::Return:
+	case sf::Keyboard::Return: //open submenu or start game
         if ((highlighted == 0 && m_p1 != Controls::KB) ||
             (highlighted == 1 && m_p2 != Controls::KB)) {
-            break; //does not open any submenu, just stay in MainMenu
+            break; //submenus only exist for keyboard settings - just stay in MainMenu if on mouse/AI
         }
         else {
             return highlighted + 1;

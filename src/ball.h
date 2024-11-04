@@ -30,6 +30,6 @@ class Ball: public PhysicalObject {
     */
     void rebounce(double surfaceAngle);
     private:
-    double m_direction; //radians
-    double m_velocity;
+		double m_direction; //*< direction of the ball in radians */
+		double m_velocity;  //*< velocity of the ball */
 };

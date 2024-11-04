@@ -4,6 +4,8 @@
 #include <sfml/Graphics.hpp>
 #include <iostream>
 #include <cassert>
+#include <vector>
+#include <string>
 /** @endcond */
 
 MenuBase::MenuBase(sf::RenderWindow& window, const std::vector<std::string>& items) : highlighted(0), m_window(window) {

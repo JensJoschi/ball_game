@@ -6,6 +6,7 @@
 #include "playermouse.h"
 #include "ai.h"
 #include "inputSettings.h"
+#include "enums.h"
 
 #include <SFML/Graphics.hpp>
 #include <iostream>

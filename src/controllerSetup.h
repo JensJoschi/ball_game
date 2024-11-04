@@ -7,7 +7,10 @@
 #include "ai.h"
 #include <variant>
 
-
+/**
+* @brief Struct that contains the settings for a controller
+ * Contains the type of controller, the general settings (sensitivity) and the settings that are specific to one controller type (e.g. keybinding)
+ */
 struct ControllerSetup {
     Controls control;
     ControllerSettings generalSettings;
