@@ -20,6 +20,6 @@ TEST(GameStateTest, crationAndDeletion){
 
     sf::CircleShape* circle = new sf::CircleShape(10);
     gs.addDrawable(items::SCORE1, circle);
-    gs.onNotify(circle, shape);
+    gs.exchangeDrawable(circle, shape);
     ASSERT_EQ(gs.drawables[3], shape);
 }

@@ -98,7 +98,7 @@ bool Game::handleCollisions(const sf::Time& elapsed){
     }
     sf::Vector2u windowSize = m_window->getSize();
     sf::RectangleShape boundaries(sf::Vector2f(static_cast<float>(windowSize.x), static_cast<float>(windowSize.y)));
-    if (m_ball.get()->doesCollide(boundaries)) { //within boundaries
+	if (m_ball->getShape().getGlobalBounds().intersects(boundaries.getGlobalBounds())) {
         return false;
     }
     auto ballBounds = m_ball->getShape().getGlobalBounds();

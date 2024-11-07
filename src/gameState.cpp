@@ -5,11 +5,18 @@
 #include <algorithm>
 /** @endcond */
 
-GameState::GameState(){
+GameState::GameState(): collisionCount(0){
 	drawables.resize(5);
 }
+GameState::~GameState() {
+	for (auto d : drawables) {
+		if (d) {
+			delete d;
+		}
+	}
+}
 
-void GameState::onNotify(const sf::Drawable* oldD, const sf::Drawable* newD){
+void GameState::exchangeDrawable(const sf::Drawable* oldD, const sf::Drawable* newD){
 	assert(newD);
 	auto it = std::find(drawables.begin(), drawables.end(), oldD);
 	assert (it != drawables.end());
@@ -21,6 +28,16 @@ void GameState::onDangle(const sf::Drawable* selfSubject){
 	auto it = std::find(drawables.begin(), drawables.end(), selfSubject);
 	assert (it != drawables.end());
 	*it = nullptr;
+}
+
+int GameState::getCollision() const {
+	return collisionCount;
+}
+
+void GameState::onNotify(const sf::Drawable* selfSubject, events e) {
+	if (e == events::collision) {
+		collisionCount++;
+	}
 }
 
 void GameState::addDrawable(items i,  const sf::Drawable* object){

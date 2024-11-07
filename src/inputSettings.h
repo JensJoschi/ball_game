@@ -39,5 +39,5 @@ public:
 	}
 private:
 	sf::RenderWindow& m_window;
-	ControllerSettings general{ 250.0 };
+	ControllerSettings general{ 500.0 };
 };

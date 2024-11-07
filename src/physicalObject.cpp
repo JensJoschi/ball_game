@@ -52,6 +52,6 @@ void PhysicalObject::move(const sf::Vector2f& destination) {
 
 void PhysicalObject::notifyCollision() const {
 	for (auto i : m_observers) {
-		//i->onNotify(this->m_shape.get());
+		i->onNotify(this->m_shape.get(), events::collision);
 	}
 }
