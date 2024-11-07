@@ -29,7 +29,8 @@ Game::Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::R
   m_pLeft(sf::Vector2f{20.0f, static_cast<float>(m_window->getSize().y/2.0)}, options.player1Size, 10.0f),
   m_pRight(sf::Vector2f{m_window->getSize().x - 20.0f,static_cast<float>(m_window->getSize().y/2.0)}, options.player2Size, 10.0f),
   m_score1(0), m_score2(0), m_ballVelocity(options.ballVelocity), m_score1Text(), m_score2Text(),
-  m_c1(createController(std::move(p1), window)), m_c2(createController(std::move(p2), window))
+  m_c1(createController(std::move(p1), window)), m_c2(createController(std::move(p2), window)),
+  m_sound()
 {
     srand(0);
     if (!m_font.loadFromFile("arial.ttf")) {
@@ -52,8 +53,9 @@ Game::Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::R
     m_gameState.addDrawable(items::SCORE1, &m_score1Text);
     m_gameState.addDrawable(items::SCORE2, &m_score2Text);
     m_pLeft.addObserver(&m_gameState);
+	m_pLeft.addObserver(&m_sound);
     m_pRight.addObserver(&m_gameState);
-
+	m_pRight.addObserver(&m_sound);
     auto c = dynamic_cast<AI*> (m_c1.get());
 	if (c) c->connect(&m_gameState);
 	c = dynamic_cast<AI*> (m_c2.get());
@@ -73,6 +75,9 @@ bool Game::update(const std::vector<sf::Event>& events, const sf::Time& elapsed)
         movePlayer(m_pLeft, m_c1.get(),  events, elapsed);
         movePlayer(m_pRight, m_c2.get(), events, elapsed);
     }
+    else{ 
+        m_sound.onNotify(&m_ball->getShape(), obsEvents::score); 
+    }
     
     m_renderer.display();
     if (m_score1 == 10 || m_score2 == 10) {
@@ -87,6 +92,7 @@ void Game::addBall(double speed){
     m_ball = std::make_unique<Ball>(sf::Vector2f{windowSize.x/2.0f, 
         windowSize.y/2.0f}, 10.0f, direction, speed);
     m_ball->addObserver(&m_gameState);
+	m_ball->addObserver(&m_sound);
     m_gameState.addDrawable(items::BALL, &m_ball->getShape());
 }
 

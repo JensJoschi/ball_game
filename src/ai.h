@@ -24,6 +24,7 @@ class AI : public Controller{
     public:
     AI(const ControllerSettings general, const AISetupParams specific);
     AI() = delete;
+	~AI() = default; //gameState is not owned by AI.
     Command* action(const std::vector<sf::Event>& events) override;
 	void connect(const GameState* state);
 

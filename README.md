@@ -36,6 +36,8 @@ The game state class is a central registry that can update other classes about t
 and avoids coupling. 
 Other notable events are signalled via an observer pattern (e.g. collisions of objects), and the gameState doubles as observer. This allows e.g. counting the total number of game-
 wide collisions, and trigger changes in difficulty or color as the game progresses (independent of score). To demonstrate, the game turns cyan as soon as three collisions were detected.
+To demonstrate the versatility of the observer pattern, another observer (Sound) is added, and it plays a sound on various notable events (scores, collisions). It is independent of 
+gameState and hooks directly on various Objects (paddles ball - currently the same as game state but may also be a smaller or larger subset in the future).
 
 **Control:**  
  
@@ -46,5 +48,4 @@ allows abstract control of any object, by human, AI or the game environment with
 **issues:**  
 - ball jumps a bit when hitting a wall, particularly noticeable if hitting at small angles
 - keybinding menu to write, possibly also menus for AI difficulty and mouse sensitivity
-- memory management: proper deallocation of raw ptrs, or use of smart pointers
 - if player uses mouse, paddle moves with constant speed into direction of mouse. Could instantly go to current mouse pos instead, to track the mouse more closely

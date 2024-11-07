@@ -9,6 +9,7 @@
 #include "options.h"
 #include "paddle.h"
 #include "renderer.h"
+#include "sound.h"
 
 /** @cond */
 #include <memory>
@@ -35,6 +36,8 @@ class Game{
 	 */
 	explicit Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::RenderWindow& window);
 
+	~Game() = default; //window is ont owned by Game.
+
     /**
 	* @brief run 1 time step
 	 * returns true if game over.
@@ -58,6 +61,7 @@ class Game{
     double m_ballVelocity;
     sf::Font m_font;
 
+    Sound m_sound;
     void addBall(double speed);
     /**
 	* @brief Check for collisions and update game

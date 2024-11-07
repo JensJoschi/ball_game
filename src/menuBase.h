@@ -16,7 +16,7 @@
 class MenuBase {
 public:
     MenuBase(sf::RenderWindow& window, const std::vector<std::string>& items);
-    virtual ~MenuBase() = default;
+	virtual ~MenuBase() = default; //window is not owned by the menu
 	int update(const std::vector<sf::Event>& events);
 	void display();
 	void highlight();

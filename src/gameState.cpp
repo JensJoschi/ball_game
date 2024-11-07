@@ -34,8 +34,8 @@ int GameState::getCollision() const {
 	return collisionCount;
 }
 
-void GameState::onNotify(const sf::Drawable* selfSubject, events e) {
-	if (e == events::collision) {
+void GameState::onNotify(const sf::Drawable* selfSubject, obsEvents e) {
+	if (e == obsEvents::collision) {
 		collisionCount++;
 	}
 }

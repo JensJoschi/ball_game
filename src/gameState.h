@@ -22,11 +22,11 @@
 class GameState: public Observer{
     public: 
     GameState();
-	~GameState();
+	~GameState(); //drawables are not owned by GameState.
     void addDrawable(items i, const sf::Drawable* newD);
 	void exchangeDrawable(const sf::Drawable* oldD, const sf::Drawable* newD);
 	int getCollision() const;
-    virtual void onNotify(const sf::Drawable* selfSubject, events e) override; //to be renamed exchangeDrawable, no override
+    virtual void onNotify(const sf::Drawable* selfSubject, obsEvents e) override; //to be renamed exchangeDrawable, no override
     virtual void onDangle(const sf::Drawable* selfSubject) override;
     std::vector<const sf::Drawable*> drawables;
 private:

@@ -21,7 +21,7 @@ class PhysicalObject {
 
 	public:
 	explicit PhysicalObject(std::unique_ptr<sf::Shape> shape);
-	virtual ~PhysicalObject();
+	virtual ~PhysicalObject(); //tell any observers that this subject is being destroyed
 	void addObserver(Observer* observer);
 	void removeObserver(Observer* observer);
 	bool doesCollide(const sf::Shape& other) const;

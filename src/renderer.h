@@ -15,6 +15,7 @@
 class Renderer{
     public: 
     Renderer(sf::RenderWindow* window, const GameState& gs): window(window), m_gameState(gs){};
+	~Renderer() = default; //neither gameState nor window are owned.
     void display();
     int getNoObjects();
     private:
