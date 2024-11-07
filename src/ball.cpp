@@ -15,11 +15,11 @@ m_direction(direction), m_velocity(vel) {
     m_shape->setPosition(pos.x, pos.y);
 }
 
-void Ball::moveBall(sf::Time elapsed) {
+void Ball::move(sf::Time elapsed) {
     sf::Vector2f p = m_shape->getPosition();
     p.x += m_velocity * cos(m_direction) * elapsed.asSeconds();
     p.y += m_velocity * sin(m_direction) * elapsed.asSeconds();
-    move(p);
+    setDestination(p);
 }
 
 void Ball::rebounce(double surfaceAngle) {

@@ -15,12 +15,7 @@ class Ball: public PhysicalObject {
     Ball(sf::Vector2f pos, float size, double direction, double vel);
     Ball() = delete; //game does not work with default ball that does not move
 
-    /**
-     * \brief move the ball
-     * \details
-     * Move ball according to laws of physics.
-     */
-    void moveBall(sf::Time elapsed);
+    void move(sf::Time elapsed) override;
 
     /*! 
         *  \brief bounce the ball

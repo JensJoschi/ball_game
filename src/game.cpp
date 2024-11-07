@@ -67,7 +67,7 @@ bool Game::update(const std::vector<sf::Event>& events, const sf::Time& elapsed)
     assert(m_ball);
     assert(m_c1);
     assert(m_c2);
-    m_ball->moveBall(elapsed);
+    m_ball->move(elapsed);
     bool someoneScored = handleCollisions(elapsed);
     if (!someoneScored) {
         movePlayer(m_pLeft, m_c1.get(),  events, elapsed);
@@ -106,7 +106,7 @@ bool Game::handleCollisions(const sf::Time& elapsed){
     if (ballBounds.top < fieldBounds.top || ballBounds.top + ballBounds.height > fieldBounds.top + fieldBounds.height) {
         m_ball->rebounce(0.0);
         while (ballBounds.top < fieldBounds.top || ballBounds.top + ballBounds.height > fieldBounds.top + fieldBounds.height){
-            m_ball->moveBall(elapsed);
+            m_ball->move(elapsed);
             ballBounds = m_ball->getShape().getGlobalBounds();
         }
         return false;

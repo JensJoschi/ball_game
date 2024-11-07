@@ -18,7 +18,7 @@ TEST(aitest, movement){
     EXPECT_EQ(p1pos.y, 0.0);
     auto ballpos = static_cast<const sf::Shape*>(gs.drawables[static_cast<int>(items::BALL)])->getPosition();
     EXPECT_EQ(ballpos.y, 0.0);
-    ball.moveBall(sf::seconds(1));
+    ball.move(sf::seconds(1));
     ballpos = static_cast<const sf::Shape*>(gs.drawables[static_cast<int>(items::BALL)])->getPosition();
     EXPECT_EQ(ballpos.y, 3.0);
     Command* m = ai.action({});

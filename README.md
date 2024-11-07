@@ -19,25 +19,32 @@ The core of the game consists of a Game object, Ball and Paddle. Balls and Paddl
 
 **Movement**:  
 
-The PhysicalObject class contains the current shape and can be moved around. There are in principle two forms of movement: based on physics (gravity, impulse etc), and based on game mechanics (control by AI, player or power items). The setDestination function of PhysicalObject is a basic setter that does not contain either, so access is restricted by making it a protected member. The derived classes (Ball, Paddle etc) add physics and game logic via the exposed public function move().Currently, only Ball movement is based on physics, but in the future, Paddles may include physics-based movement as well, e.g. impulse upon being hit by a ball, gravity etc.
-Game movement mechanics are encapsulated in a command pattern. [remove: Only the commands are friends with PhysicalObject, so only they are able to access the protected setter and move Paddles according to game logic (up or down)]. Usage of a command patterns separates the physical constraints of movement from those imposed by game logic.
+The PhysicalObject class contains the current shape and can be moved around. There are in principle two forms of movement: based on physics (gravity, impulse etc), and based on 
+game mechanics (control by AI, player or power items). The setDestination function of PhysicalObject is a basic setter that does not contain either, so access is restricted by making
+it a protected member. The derived classes (Ball, Paddle etc) add physics via the exposed public function move(). Currently, only Ball movement is based on physics, but in the future, 
+Paddles may include physics-based movement as well, e.g. impulse upon being hit by a ball, gravity etc.
+Game movement mechanics are encapsulated in a command pattern. Commands are friends with PhysicalObject, so only they are able to access the protected setter and move Paddles according
+to their own game logic (up or down). Usage of a command patterns separates the physical constraints of movement from those imposed by game logic.
 
 **Visibility and collision:  **
 
-The PhysicalObject has a shape which is used for displaying and calculating collisions with other shapes. GameState tracks the identity of all objects that are currently in the game. Renderer and AI can query the GameState to draw objects/to react to ball movement. 
+The PhysicalObject has a shape which is used for displaying and calculating collisions with other shapes. GameState tracks the identity of all objects that are currently in the game.
+Renderer and AI can query the GameState to draw objects/to react to ball movement. 
 
 **Observers and game state:**  
-The game state class is a central registry that can update other classes about the current position and shape of each object. This ensures that all entities react to the same information and avoids coupling. 
-Other notable events are signalled via an observer pattern (e.g. collisions of objects), and the gameState doubles as observer. This allows e.g. counting the total number of game-wide collisions, and trigger changes in difficulty or color as the game progresses (independent of score). To demonstrate, the game turns cyan as soon as three collisions were detected.
+The game state class is a central registry that can update other classes about the current position and shape of each object. This ensures that all entities react to the same information
+and avoids coupling. 
+Other notable events are signalled via an observer pattern (e.g. collisions of objects), and the gameState doubles as observer. This allows e.g. counting the total number of game-
+wide collisions, and trigger changes in difficulty or color as the game progresses (independent of score). To demonstrate, the game turns cyan as soon as three collisions were detected.
 
 **Control:**  
  
 Controllers fetch input (from players or AI) and are able to return (or queue) the commands. Game is responsible for matching controller outputs (commands) with a geometry (paddles). 
-Game may have its own way of interfering with the objects as well, e.g. using commands on ball to make the ball wiggle, or on paddles to prevent them from leaving the screen. This design allows abstract control of any object, by human, AI or the game environment without entangling the classes. Currently implemented controls are keyboard, mouse and AI.
+Game may have its own way of interfering with the objects as well, e.g. using commands on ball to make the ball wiggle, or on paddles to prevent them from leaving the screen. This design
+allows abstract control of any object, by human, AI or the game environment without entangling the classes. Currently implemented controls are keyboard, mouse and AI.
 
 **issues:**  
 - ball jumps a bit when hitting a wall, particularly noticeable if hitting at small angles
-- physicalobject is not abstract yet, paddle needs to implement a move() function, and the setter should be renamed to setDestination().
 - keybinding menu to write, possibly also menus for AI difficulty and mouse sensitivity
 - memory management: proper deallocation of raw ptrs, or use of smart pointers
 - if player uses mouse, paddle moves with constant speed into direction of mouse. Could instantly go to current mouse pos instead, to track the mouse more closely

@@ -45,7 +45,7 @@ const sf::Shape& PhysicalObject::getShape() const {
 	return *m_shape.get();
 }
 
-void PhysicalObject::move(const sf::Vector2f& destination) {
+void PhysicalObject::setDestination(const sf::Vector2f& destination) {
     m_shape->setPosition(destination);
 }
 
