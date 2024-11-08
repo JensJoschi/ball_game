@@ -8,13 +8,6 @@
 GameState::GameState(): collisionCount(0){
 	drawables.resize(5);
 }
-GameState::~GameState() {
-	for (auto d : drawables) {
-		if (d) {
-			delete d;
-		}
-	}
-}
 
 void GameState::exchangeDrawable(const sf::Drawable* oldD, const sf::Drawable* newD){
 	assert(newD);
@@ -43,4 +36,20 @@ void GameState::onNotify(const sf::Drawable* selfSubject, obsEvents e) {
 void GameState::addDrawable(items i,  const sf::Drawable* object){
 	assert(object);
 	drawables[static_cast<int>(i)] = object;
+}
+
+bool GameState::isCollisionThresReached() {
+	if ((collisionCount + 1) % 15 == 0) {
+		if (act) { 
+			act = false; 
+			return true;
+		}
+		else { //disables subsequent calls until the next collision
+			return false;
+		}
+	}
+	else {
+		act = true;
+		return false;
+	}
 }

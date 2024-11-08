@@ -69,21 +69,28 @@ bool Game::update(const std::vector<sf::Event>& events, const sf::Time& elapsed)
     assert(m_ball);
     assert(m_c1);
     assert(m_c2);
-    m_ball->move(elapsed);
-    bool someoneScored = handleCollisions(elapsed);
-    if (!someoneScored) {
-        movePlayer(m_pLeft, m_c1.get(),  events, elapsed);
-        movePlayer(m_pRight, m_c2.get(), events, elapsed);
+	if (m_gameState.isCollisionThresReached()) {
+        m_ballVelocity += 25;
+        addBall(m_ballVelocity);
+		return false;
     }
-    else{ 
-        m_sound.onNotify(&m_ball->getShape(), obsEvents::score); 
+    else {
+        m_ball->move(elapsed);
+        bool someoneScored = handleCollisions(elapsed);
+        if (!someoneScored) {
+            movePlayer(m_pLeft, m_c1.get(), events, elapsed);
+            movePlayer(m_pRight, m_c2.get(), events, elapsed);
+        }
+        else {
+            m_sound.onNotify(&m_ball->getShape(), obsEvents::score);
+        }
+
+        m_renderer.display();
+        if (m_score1 == 10 || m_score2 == 10) {
+            return true;
+        }
+        else return false;
     }
-    
-    m_renderer.display();
-    if (m_score1 == 10 || m_score2 == 10) {
-        return true;
-    }
-    else return false;
 }
 
 void Game::addBall(double speed){
@@ -110,6 +117,7 @@ bool Game::handleCollisions(const sf::Time& elapsed){
     auto ballBounds = m_ball->getShape().getGlobalBounds();
     auto fieldBounds = boundaries.getGlobalBounds();
     if (ballBounds.top < fieldBounds.top || ballBounds.top + ballBounds.height > fieldBounds.top + fieldBounds.height) {
+		m_ball->doesCollide(m_ball->getShape()); //will increase the collision counter
         m_ball->rebounce(0.0);
         while (ballBounds.top < fieldBounds.top || ballBounds.top + ballBounds.height > fieldBounds.top + fieldBounds.height){
             m_ball->move(elapsed);

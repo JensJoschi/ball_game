@@ -27,4 +27,5 @@ class Ball: public PhysicalObject {
     private:
 		double m_direction; //*< direction of the ball in radians */
 		double m_velocity;  //*< velocity of the ball */
+		sf::Color chooseColor(); //*< choose a random color for the ball */
 };
