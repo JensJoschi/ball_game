@@ -1,9 +1,10 @@
 # Overview  
 This is a little pong game for demonstration purposes. While it may work, the main objective is to demonstrate various design patterns and best practices. 
 
-A ball is placed in the middle of a field. It moves into a random direction with constant velocity, and it will rebounce from any hard object it encounters. These hard objects are 1) the upper and lower walls, 2) paddles that can be controlled by Player or AI. If the ball moves past the paddle and enters the right/left edge of the field, the opposite site gains a point. 
+A ball is placed in the middle of a field. It moves into a random direction with constant velocity, and it will rebounce from any hard object it encounters. These hard objects are 1) the upper and lower walls, 2) paddles that can
+be controlled by Player or AI. If the ball moves past the paddle and enters the right/left edge of the field, the opposite site gains a point. 
 
-The number of human players, AI difficulty (if applicable) and sides are chosen at startup. The game is over when the player aborts.
+The number of human players, AI difficulty (if applicable) and sides are chosen at startup. The game is over when the player aborts. After every 15 collisions (irrespective of score), the speed is increased and a new ball is placed.
 
 
 # How to play
@@ -35,15 +36,24 @@ Renderer and AI can query the GameState to draw objects/to react to ball movemen
 The game state class is a central registry that can update other classes about the current position and shape of each object. This ensures that all entities react to the same information
 and avoids coupling. 
 Other notable events are signalled via an observer pattern (e.g. collisions of objects), and the gameState doubles as observer. This allows e.g. counting the total number of game-
-wide collisions, and trigger changes in difficulty or color as the game progresses (independent of score). To demonstrate, the game turns cyan as soon as three collisions were detected.
+wide collisions, and trigger changes in difficulty or color as the game progresses (independent of score). For example, the game turns cyan as soon as three collisions were detected, and 
+the ball speed increases and ball color changes on every 15 collisions.
 To demonstrate the versatility of the observer pattern, another observer (Sound) is added, and it plays a sound on various notable events (scores, collisions). It is independent of 
-gameState and hooks directly on various Objects (paddles ball - currently the same as game state but may also be a smaller or larger subset in the future).
+gameState and hooks directly on various Objects (paddles ball - currently the same as game state but may also be a smaller or larger subset in the future). It does not yet use sfml::sound but a simple command line output.
 
 **Control:**  
  
 Controllers fetch input (from players or AI) and are able to return (or queue) the commands. Game is responsible for matching controller outputs (commands) with a geometry (paddles). 
 Game may have its own way of interfering with the objects as well, e.g. using commands on ball to make the ball wiggle, or on paddles to prevent them from leaving the screen. This design
 allows abstract control of any object, by human, AI or the game environment without entangling the classes. Currently implemented controls are keyboard, mouse and AI.
+
+**Menu:**
+
+A common base Menu class allows using the cursors to move through the items, and highlights the current selection. There are currently 2 fully implemented classes, MainMenu and OptionsMenu. 
+The OptionsMenu allows using right and left cursors to change paddle size and initial ball speed, while the MainMenu allows using left and right to choose between Keyboard, Mouse and AI control for each player.
+A third class, InputSettings will allow changing keybindings for each player, AI difficulty and mouse sensitivity (possibly multiple classes). The update() function returns an integer value; a value of 0 
+means the menu is still active, a value larger 1 means the menu is done and a different action shall start(e.g. start the game, open a different menu).
+
 
 **issues:**  
 - ball jumps a bit when hitting a wall, particularly noticeable if hitting at small angles
