@@ -8,8 +8,8 @@ find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 ## ---- find sources ----
 
 set (SRC 
-    "ai.cpp" "ball.cpp" "command.cpp"  "game.cpp" "gameState.cpp" "physicalObject.cpp" "playerKB.cpp"
-    "playerMouse.cpp" "renderer.cpp"
+    "ai.cpp" "ball.cpp" "command.cpp"  "game.cpp" "gameState.cpp" "mainMenu.cpp" "MenuBase.cpp" "physicalObject.cpp" "playerKB.cpp"
+    "playerMouse.cpp" "renderer.cpp" "options.cpp"
 )
 if(NOT SRC)
     message(FATAL_ERROR "SRC is empty")
@@ -33,3 +33,11 @@ endforeach()
 add_executable("ballgame"    ${SRC_FILES} "main.cpp" )
 target_include_directories(ballgame PRIVATE ${SFML_INCLUDE_DIRS})
 target_link_libraries(ballgame PRIVATE sfml-graphics sfml-window sfml-system)
+
+# Copy the font file to the executable directory
+add_custom_command(
+    TARGET ballgame POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/arial.ttf"
+        "$<TARGET_FILE_DIR:ballgame>"
+)

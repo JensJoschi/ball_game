@@ -9,7 +9,8 @@
 #include <SFML/Graphics.hpp>
 /** @endcond */
 
-PlayerKB::PlayerKB(const PlayerKBSetupParams& params): Controller(params.m_sensitivity), m_params(params){}
+PlayerKB::PlayerKB(const ControllerSettings general, const PlayerKBSetupParams specific)
+    : Controller(general), m_params(specific) {}
 
 Command* PlayerKB::action(const std::vector<sf::Event>& events){
     assert (up != nullptr && down != nullptr);

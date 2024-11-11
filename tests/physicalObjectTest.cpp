@@ -1,11 +1,12 @@
 #include <gtest/gtest.h>
 #include "physicalObject.h"
+#include "paddle.h"
 
 
 class PhysObTest : public ::testing::Test {
     protected:
     PhysObTest() : physob(std::make_unique<sf::RectangleShape>(sf::Vector2f{1.0, 1.0})) {}
-    PhysicalObject physob;
+    Paddle physob; //the simplest concrete PhysicalObject
     double tolerance{0.01};
 
     void SetUp() override {
@@ -33,12 +34,10 @@ TEST_F(PhysObTest, doesCollideShape){
 TEST_F(PhysObTest, doesCollidePhysOb){
     std::unique_ptr<sf::RectangleShape> shape = std::make_unique<sf::RectangleShape>(sf::Vector2f{1.0, 1.0});
     shape->setPosition(0.0, 0.5);
-    PhysicalObject physob2(std::move(shape));
+    Paddle physob2(std::move(shape));
     EXPECT_TRUE(physob.doesCollide(physob2));
     std::unique_ptr<sf::RectangleShape> shape2 = std::make_unique<sf::RectangleShape>(sf::Vector2f{1.0, 1.0});
     shape2->setPosition(0.0, 1.5);
-    PhysicalObject physob3(std::move(shape2));
+    Paddle physob3(std::move(shape2));
     EXPECT_FALSE(physob.doesCollide(physob3));
 }
-
-//no test of move yet, move function is protected. Will be tested in derived classes / once there is a command pattern

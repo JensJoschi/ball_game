@@ -4,7 +4,7 @@
 /** @cond */
 #include <SFML/Graphics.hpp>
 /** @endcond */
-
+#define M_PI 3.14159265358979323846
 /*! 
     *  \brief Ball class
     *  \details
@@ -15,12 +15,7 @@ class Ball: public PhysicalObject {
     Ball(sf::Vector2f pos, float size, double direction, double vel);
     Ball() = delete; //game does not work with default ball that does not move
 
-    /**
-     * \brief move the ball
-     * \details
-     * Move ball according to laws of physics.
-     */
-    void moveBall(sf::Time elapsed);
+    void move(sf::Time elapsed) override;
 
     /*! 
         *  \brief bounce the ball
@@ -30,6 +25,7 @@ class Ball: public PhysicalObject {
     */
     void rebounce(double surfaceAngle);
     private:
-    double m_direction; //radians
-    double m_velocity;
+		double m_direction; //*< direction of the ball in radians */
+		double m_velocity;  //*< velocity of the ball */
+		sf::Color chooseColor(); //*< choose a random color for the ball */
 };

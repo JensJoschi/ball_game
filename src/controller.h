@@ -7,14 +7,28 @@
 #include <SFML/Graphics.hpp>
 /** @endcond */
 
+
+/** @brief ControllerSettings struct
+ *
+ * This struct stores general settings that are valid for any controller (Controller is an abstract class). 
+ * Derived classes of Controller contain another struct with specialized settings (e.g. keybinding for Keyboard controller).
+ */
+struct ControllerSettings {
+	double sensitivity{ 0.0 }; /**< Describes how much an object is moved by 1 action call. */
+};
+
 class Controller{
     public:
-    Controller(double moveby = 0.0): 
-        up(std::make_unique<upCommand>(moveby)), 
-        down(std::make_unique<downCommand>(moveby)){}
+        Controller(const ControllerSettings opt) 
+          : m_settings(opt),
+            up(std::make_unique<upCommand>(opt.sensitivity)),
+            down(std::make_unique<downCommand>(opt.sensitivity)) {
+            assert(opt.sensitivity > 0);
+        }
     virtual Command* action(const std::vector<sf::Event>& events) = 0;
     virtual ~Controller() = default;
     protected:
-    std::unique_ptr<Command> up;
-    std::unique_ptr<Command> down;
+	const ControllerSettings m_settings;
+	std::unique_ptr<Command> up; /**< Stores order to move upwards. See command.h. */
+	std::unique_ptr<Command> down; /**< Stores order to move downwards. See command.h. */
 };

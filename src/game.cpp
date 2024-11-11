@@ -1,13 +1,17 @@
 #include "game.h"
-#include "controller.h"
+
+#include "ai.h"
 #include "ball.h"
-#include "paddle.h"
-#include "observer.h"
 #include "command.h"
+#include "controller.h"
+#include "controllerSetup.h"
+#include "enums.h"
+#include "gameState.h"
+#include "options.h"
+#include "paddle.h"
 #include "playerKB.h"
 #include "playermouse.h"
 #include "renderer.h"
-#include "ai.h"
 
 /** @cond */
 #include <cmath>
@@ -17,113 +21,85 @@
 #include <SFML/Graphics.hpp>
 /** @endcond */
 
-Game::Game(float extentX, float extentY, float player1Size, float player2Size, int ballVelocity)
-    : m_window(sf::VideoMode(extentX, extentY), "Display!"),
-      m_gameState(),
-      m_renderer(&m_window, m_gameState),
-      m_pLeft(sf::Vector2f{20.0f, extentY/2}, player1Size, 10.0f),
-      m_pRight(sf::Vector2f{extentX-20.0f, extentY/2}, player2Size, 10.0f),
-      m_score1(0), m_score2(0), m_ballVelocity(ballVelocity), m_score1Text(), m_score2Text()
-    {
-        srand(0);
-        if (!m_font.loadFromFile("HelveticaNeue.ttc")) {
-            std::cerr << "Error loading font\n";
-        }
-        m_score1Text.setFont(m_font);
-        m_score1Text.setString("0");
-        m_score1Text.setCharacterSize(24); 
-        m_score1Text.setFillColor(sf::Color::White);
-        m_score1Text.setPosition(10.0f, 10.0f); // top-left corner
 
-        m_score2Text.setFont(m_font);
-        m_score2Text.setString("0");
-        m_score2Text.setCharacterSize(24);
-        m_score2Text.setFillColor(sf::Color::White);
-        m_score2Text.setPosition(extentX - 30.0f, 10.0f); // top-right corner
-
-        m_gameState.addDrawable(items::P1, &m_pLeft.getShape());
-        m_gameState.addDrawable(items::P2, &m_pRight.getShape());
-        m_gameState.addDrawable(items::SCORE1, &m_score1Text);
-        m_gameState.addDrawable(items::SCORE2, &m_score2Text);
-        m_pLeft.addObserver(&m_gameState);
-        m_pRight.addObserver(&m_gameState);
-        m_renderer.display();
+Game::Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::RenderWindow& window)
+: m_window(&window),
+  m_gameState(),
+  m_renderer(m_window, m_gameState),
+  m_pLeft(sf::Vector2f{20.0f, static_cast<float>(m_window->getSize().y/2.0)}, options.player1Size, 10.0f),
+  m_pRight(sf::Vector2f{m_window->getSize().x - 20.0f,static_cast<float>(m_window->getSize().y/2.0)}, options.player2Size, 10.0f),
+  m_score1(0), m_score2(0), m_ballVelocity(options.ballVelocity), m_score1Text(), m_score2Text(),
+  m_c1(createController(std::move(p1), window)), m_c2(createController(std::move(p2), window)),
+  m_sound()
+{
+    srand(0);
+    if (!m_font.loadFromFile("arial.ttf")) {
+        std::cerr << "Error loading font\n";
     }
+    m_score1Text.setFont(m_font);
+    m_score1Text.setString("0");
+    m_score1Text.setCharacterSize(24); 
+    m_score1Text.setFillColor(sf::Color::White);
+    m_score1Text.setPosition(10.0f, 10.0f); // top-left corner
 
-void Game::start(){
-    assignControls();
+    m_score2Text.setFont(m_font);
+    m_score2Text.setString("0");
+    m_score2Text.setCharacterSize(24);
+    m_score2Text.setFillColor(sf::Color::White);
+    m_score2Text.setPosition(m_window->getSize().x - 30.0f, 10.0f); // top-right corner
+
+    m_gameState.addDrawable(items::P1, &m_pLeft.getShape());
+    m_gameState.addDrawable(items::P2, &m_pRight.getShape());
+    m_gameState.addDrawable(items::SCORE1, &m_score1Text);
+    m_gameState.addDrawable(items::SCORE2, &m_score2Text);
+    m_pLeft.addObserver(&m_gameState);
+	m_pLeft.addObserver(&m_sound);
+    m_pRight.addObserver(&m_gameState);
+	m_pRight.addObserver(&m_sound);
+    auto c = dynamic_cast<AI*> (m_c1.get());
+	if (c) c->connect(&m_gameState);
+	c = dynamic_cast<AI*> (m_c2.get());
+	if (c) c->connect(&m_gameState);
+
     addBall(m_ballVelocity);
+    m_renderer.display();
 }
 
-void Game::run(){
-    m_window.setFramerateLimit(60);
-    sf::Clock clock;
-
-    while (m_window.isOpen()) {
-        sf::Time elapsed = clock.restart(); 
-        std::vector<sf::Event> events;
-        sf::Event event;
-        while (m_window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed){
-                m_window.close();}
-            events.push_back(event);
-        }
-        update(events, elapsed);
-        m_renderer.display();
-        if (m_score1 == 10 || m_score2 == 10) {
-            m_window.close();
-        }
-    }
-}
-
-void Game::update(const std::vector<sf::Event>& events, const sf::Time& elapsed){
+bool Game::update(const std::vector<sf::Event>& events, const sf::Time& elapsed){
     assert(m_ball);
     assert(m_c1);
     assert(m_c2);
-    m_ball->moveBall(elapsed);
-    bool someoneScored = handleCollisions(elapsed);
-    if (someoneScored) {return;} 
-    movePlayer(m_pLeft, m_c1.get(),  events, elapsed);
-    movePlayer(m_pRight, m_c2.get(), events, elapsed);
-}
-
-void Game::assignControls(){
-    std::cout << "Player 1, please enter up key" << std::endl;
-    sf::Keyboard::Key upKey = getKeyPressed();
-    std::cout << "Player 1, please enter down key" << std::endl;
-    sf::Keyboard::Key downKey = getKeyPressed();
-    PlayerKBSetupParams p1Params{250.0, upKey , downKey};
-    m_c1 = std::make_unique<PlayerKB>(p1Params);
-
-    // std::cout << "Player 2, please enter up key" << std::endl;
-    // upKey = getKeyPressed();
-    // std::cout << "Player 2, please enter down key" << std::endl;
-    // downKey = getKeyPressed();
-    // PlayerKBSetupParams p2Params{250.0, upKey , downKey};
-    // m_c2 = std::make_unique<PlayerKB>(p2Params);
-
-    // m_c2 = std::make_unique<PlayerMouse>(250.0, m_window);
-    m_c2 = std::make_unique<AI>(1, m_gameState, items::P2);
-
-}
-
-sf::Keyboard::Key Game::getKeyPressed(){
-    while (true){
-        sf::Event event;
-        while (m_window.pollEvent(event)) {
-            if (event.type == sf::Event::KeyPressed) {
-                return event.key.code;
-            }
+	if (m_gameState.isCollisionThresReached()) {
+        m_ballVelocity += 25;
+        addBall(m_ballVelocity);
+		return false;
+    }
+    else {
+        m_ball->move(elapsed);
+        bool someoneScored = handleCollisions(elapsed);
+        if (!someoneScored) {
+            movePlayer(m_pLeft, m_c1.get(), events, elapsed);
+            movePlayer(m_pRight, m_c2.get(), events, elapsed);
         }
+        else {
+            m_sound.onNotify(&m_ball->getShape(), obsEvents::score);
+        }
+
+        m_renderer.display();
+        if (m_score1 == 10 || m_score2 == 10) {
+            return true;
+        }
+        else return false;
     }
 }
 
 void Game::addBall(double speed){
     double direction = (rand() % 360) * M_PI / 180.0;  //to improve later
-    sf::Vector2u windowSize = m_window.getSize();
+    sf::Vector2u windowSize = m_window->getSize();
     m_ball = std::make_unique<Ball>(sf::Vector2f{windowSize.x/2.0f, 
         windowSize.y/2.0f}, 10.0f, direction, speed);
     m_ball->addObserver(&m_gameState);
+	m_ball->addObserver(&m_sound);
     m_gameState.addDrawable(items::BALL, &m_ball->getShape());
 }
 
@@ -133,17 +109,18 @@ bool Game::handleCollisions(const sf::Time& elapsed){
         m_ball->rebounce(M_PI/2); //vertical paddle
         return false;
     }
-    sf::Vector2u windowSize = m_window.getSize();
+    sf::Vector2u windowSize = m_window->getSize();
     sf::RectangleShape boundaries(sf::Vector2f(static_cast<float>(windowSize.x), static_cast<float>(windowSize.y)));
-    if (m_ball.get()->doesCollide(boundaries)) { //within boundaries
+	if (m_ball->getShape().getGlobalBounds().intersects(boundaries.getGlobalBounds())) {
         return false;
     }
     auto ballBounds = m_ball->getShape().getGlobalBounds();
     auto fieldBounds = boundaries.getGlobalBounds();
     if (ballBounds.top < fieldBounds.top || ballBounds.top + ballBounds.height > fieldBounds.top + fieldBounds.height) {
+		m_ball->doesCollide(m_ball->getShape()); //will increase the collision counter
         m_ball->rebounce(0.0);
         while (ballBounds.top < fieldBounds.top || ballBounds.top + ballBounds.height > fieldBounds.top + fieldBounds.height){
-            m_ball->moveBall(elapsed);
+            m_ball->move(elapsed);
             ballBounds = m_ball->getShape().getGlobalBounds();
         }
         return false;
@@ -164,7 +141,7 @@ void Game::movePlayer(Paddle& paddle, Controller* control, const std::vector<sf:
     Command* e = control->action(events);
     if(e) e->execute(paddle, elapsed);
     auto pos = paddle.getShape().getGlobalBounds();
-    auto windowSize = m_window.getSize();
+    auto windowSize = m_window->getSize();
     while (pos.top < 0) {
         downCommand d(1.0);
         d.execute(paddle, elapsed);
@@ -174,5 +151,24 @@ void Game::movePlayer(Paddle& paddle, Controller* control, const std::vector<sf:
         upCommand u(1.0);
         u.execute(paddle, elapsed);
         pos = paddle.getShape().getGlobalBounds();
+    }
+}
+
+Controller* Game::createController(ControllerSetup setup, sf::RenderWindow& window) {
+    switch (setup.control) {
+    case Controls::KB: {
+		assert(std::holds_alternative<PlayerKBSetupParams>(setup.specificSettings));
+		return new PlayerKB(std::move(setup.generalSettings), std::move(std::get<PlayerKBSetupParams>(setup.specificSettings)));
+    }
+    case Controls::MOUSE:{
+		assert(std::holds_alternative<PlayerMouseParams>(setup.specificSettings));
+		return new PlayerMouse(std::move(setup.generalSettings), std::move(std::get<PlayerMouseParams>(setup.specificSettings)));
+    }
+    case Controls::AI:{
+		assert(std::holds_alternative<AISetupParams>(setup.specificSettings));
+		return new AI(std::move(setup.generalSettings), std::move(std::get<AISetupParams>(setup.specificSettings)));
+	}
+    default:
+        return nullptr;
     }
 }

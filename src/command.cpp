@@ -13,7 +13,7 @@ Command::Command(double moveBy): m_moveBy(moveBy){
 void upCommand::execute(PhysicalObject& object, const sf::Time& elapsed){
     sf::Vector2f p = object.m_shape.get()->getPosition();
     p.y -= m_moveBy * elapsed.asSeconds();
-    object.move(p);
+    object.setDestination(p);
 //could also access and modify object.m_center directly but this would not trigger
 //the desired side effects (e.g. observers)
 }
@@ -21,6 +21,6 @@ void upCommand::execute(PhysicalObject& object, const sf::Time& elapsed){
 void downCommand::execute(PhysicalObject& object, const sf::Time& elapsed){
     sf::Vector2f p = object.m_shape.get()->getPosition();
     p.y += m_moveBy * elapsed.asSeconds();
-    object.move(p);
+    object.setDestination(p);
 }
 

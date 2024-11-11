@@ -1,10 +1,11 @@
 #include "physicalObject.h"
 #include "observer.h"
+/** @cond */
 #include <memory>
 #include <vector>
 #include <algorithm>
 #include <SFML/Graphics.hpp>
-
+/** @endcond */
 
 PhysicalObject::PhysicalObject(std::unique_ptr<sf::Shape> shape): m_shape(std::move(shape)) {
 	m_shape->setFillColor(sf::Color::White);
@@ -25,23 +26,32 @@ void PhysicalObject::removeObserver(Observer* observer) {
 }
 
 bool PhysicalObject::doesCollide(const sf::Shape& other) const {
-	return m_shape->getGlobalBounds().intersects(other.getGlobalBounds());
+	if (m_shape->getGlobalBounds().intersects(other.getGlobalBounds())) {
+		notifyCollision();
+		return true;
+	}
+	else return false;
 }
 
 bool PhysicalObject::doesCollide(const PhysicalObject& other) const {
-	return m_shape->getGlobalBounds().intersects(other.getShape().getGlobalBounds());
+	if (m_shape->getGlobalBounds().intersects(other.getShape().getGlobalBounds())) {
+		notifyCollision();
+		return true;
+	}
+	else return false;
 }
 
 const sf::Shape& PhysicalObject::getShape() const {
 	return *m_shape.get();
 }
 
-void PhysicalObject::move(const sf::Vector2f& destination) {
+void PhysicalObject::setDestination(const sf::Vector2f& destination) {
     m_shape->setPosition(destination);
-    notifyPositionChange();
 }
 
 
-void PhysicalObject::notifyPositionChange() const {
-	//...
+void PhysicalObject::notifyCollision() const {
+	for (auto i : m_observers) {
+		i->onNotify(this->m_shape.get(), obsEvents::collision);
+	}
 }

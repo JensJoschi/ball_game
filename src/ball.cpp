@@ -10,16 +10,17 @@
 Ball::Ball(sf::Vector2f pos, float size, double direction, double vel) 
 : PhysicalObject(std::make_unique<sf::CircleShape>(size/2.0)),  
 m_direction(direction), m_velocity(vel) {
+    m_shape->setFillColor(chooseColor());
     assert (direction >= 0 && direction <= 2 * M_PI);
     assert (vel > 0.0);
     m_shape->setPosition(pos.x, pos.y);
 }
 
-void Ball::moveBall(sf::Time elapsed) {
+void Ball::move(sf::Time elapsed) {
     sf::Vector2f p = m_shape->getPosition();
     p.x += m_velocity * cos(m_direction) * elapsed.asSeconds();
     p.y += m_velocity * sin(m_direction) * elapsed.asSeconds();
-    move(p);
+    setDestination(p);
 }
 
 void Ball::rebounce(double surfaceAngle) {
@@ -30,4 +31,8 @@ void Ball::rebounce(double surfaceAngle) {
     } else if (m_direction >= 2 * M_PI) {
         m_direction -= 2 * M_PI;
     }
+}
+
+sf::Color Ball::chooseColor() {
+	return sf::Color(rand() % 256, rand() % 256, rand() % 256);
 }

@@ -9,29 +9,31 @@
 
 class Observer;
 
+/** @brief PhysicalObject class
+ *
+ * PhysicalObject is the base class for all objects that can be moved in the game. It holds a shape and is able to notify observers.
+ * Diffent concrete PhysicalObjects differ in the physics / game logic of movement, hence the pure virtual move() function.
+ * 
+ */
 class PhysicalObject {
 	friend class upCommand;
 	friend class downCommand;
 
 	public:
 	explicit PhysicalObject(std::unique_ptr<sf::Shape> shape);
-	~PhysicalObject();
+	virtual ~PhysicalObject(); //tell any observers that this subject is being destroyed
 	void addObserver(Observer* observer);
 	void removeObserver(Observer* observer);
 	bool doesCollide(const sf::Shape& other) const;
 	bool doesCollide(const PhysicalObject& other) const;
 	const sf::Shape& getShape() const;
-	
+	virtual void move(sf::Time elapsed) = 0;
+
 	protected:
-	void move(const sf::Vector2f& destination);
+	void setDestination(const sf::Vector2f& destination);
 	std::unique_ptr<sf::Shape> m_shape;
 	
 	private:
 	std::vector<Observer*> m_observers;
-	/**
-	 * \brief notify change of position
-	 * \details
-	 * reports to all observers that the position has changed. This allows graphics etc to update state
-	 */
-	void notifyPositionChange() const;
+	void notifyCollision() const;
 };

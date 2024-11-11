@@ -1,14 +1,15 @@
 #include "gameState.h"
+#include "enums.h"
 /** @cond */
 #include <cassert>
 #include <algorithm>
 /** @endcond */
 
-GameState::GameState(){
+GameState::GameState(): collisionCount(0){
 	drawables.resize(5);
 }
 
-void GameState::onNotify(const sf::Drawable* oldD, const sf::Drawable* newD){
+void GameState::exchangeDrawable(const sf::Drawable* oldD, const sf::Drawable* newD){
 	assert(newD);
 	auto it = std::find(drawables.begin(), drawables.end(), oldD);
 	assert (it != drawables.end());
@@ -22,7 +23,33 @@ void GameState::onDangle(const sf::Drawable* selfSubject){
 	*it = nullptr;
 }
 
+int GameState::getCollision() const {
+	return collisionCount;
+}
+
+void GameState::onNotify(const sf::Drawable* selfSubject, obsEvents e) {
+	if (e == obsEvents::collision) {
+		collisionCount++;
+	}
+}
+
 void GameState::addDrawable(items i,  const sf::Drawable* object){
 	assert(object);
 	drawables[static_cast<int>(i)] = object;
+}
+
+bool GameState::isCollisionThresReached() {
+	if ((collisionCount + 1) % 15 == 0) {
+		if (act) { 
+			act = false; 
+			return true;
+		}
+		else { //disables subsequent calls until the next collision
+			return false;
+		}
+	}
+	else {
+		act = true;
+		return false;
+	}
 }
