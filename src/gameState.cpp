@@ -3,10 +3,11 @@
 /** @cond */
 #include <cassert>
 #include <algorithm>
+#include <variant>
 /** @endcond */
 
 GameState::GameState(): collisionCount(0){
-	drawables.resize(5);
+	drawables.resize(6);
 }
 
 void GameState::exchangeDrawable(const sf::Drawable* oldD, const sf::Drawable* newD){
@@ -27,10 +28,25 @@ int GameState::getCollision() const {
 	return collisionCount;
 }
 
-void GameState::onNotify(const sf::Drawable* selfSubject, obsEvents e) {
-	if (e == obsEvents::collision) {
-		collisionCount++;
+void GameState::onNotify(const sf::Drawable* selfSubject, std::variant<ObsEvents, Effects, SpecEvents> e) {
+	if (std::holds_alternative<ObsEvents>(e)) {
+		ObsEvents event = std::get<ObsEvents > (e);
+		if (event == ObsEvents::collision) {
+			collisionCount++;
+		}
 	}
+	else if (std::holds_alternative<SpecEvents>(e)) {
+		SpecEvents event = std::get<SpecEvents>(e);
+		if (event != SpecEvents::none){
+			specialEvent = event;
+		}
+	}
+}
+
+SpecEvents GameState::getSpecialEvent() {
+	auto temp = specialEvent;
+	specialEvent = SpecEvents::none;
+	return temp;
 }
 
 void GameState::addDrawable(items i,  const sf::Drawable* object){

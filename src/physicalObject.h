@@ -32,8 +32,7 @@ class PhysicalObject {
 	protected:
 	void setDestination(const sf::Vector2f& destination);
 	std::unique_ptr<sf::Shape> m_shape;
-	
-	private:
 	std::vector<Observer*> m_observers;
+	private:
 	void notifyCollision() const;
 };

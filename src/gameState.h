@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <variant>
 /** @endcond */
 
 
@@ -27,11 +28,13 @@ class GameState: public Observer{
 	void exchangeDrawable(const sf::Drawable* oldD, const sf::Drawable* newD);
     bool isCollisionThresReached();
     int getCollision() const;
-    virtual void onNotify(const sf::Drawable* selfSubject, obsEvents e) override; //to be renamed exchangeDrawable, no override
+    SpecEvents getSpecialEvent();
+    virtual void onNotify(const sf::Drawable* selfSubject, std::variant<ObsEvents, Effects, SpecEvents> e) override;
     virtual void onDangle(const sf::Drawable* selfSubject) override;
     std::vector<const sf::Drawable*> drawables;
 private:
     int collisionCount;
     bool act;
+    SpecEvents specialEvent{ SpecEvents::none };
 };
 

@@ -62,7 +62,12 @@ Game::Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::R
 	if (c) c->connect(&m_gameState);
 
     addBall(m_ballVelocity);
+    addItem();
     m_renderer.display();
+}
+
+Game::~Game() {
+	//if (m_powerItem) delete m_powerItem;
 }
 
 bool Game::update(const std::vector<sf::Event>& events, const sf::Time& elapsed){
@@ -72,9 +77,11 @@ bool Game::update(const std::vector<sf::Event>& events, const sf::Time& elapsed)
 	if (m_gameState.isCollisionThresReached()) {
         m_ballVelocity += 25;
         addBall(m_ballVelocity);
+		addItem();
 		return false;
     }
     else {
+        handleSpecialEvents();
         m_ball->move(elapsed);
         bool someoneScored = handleCollisions(elapsed);
         if (!someoneScored) {
@@ -82,7 +89,7 @@ bool Game::update(const std::vector<sf::Event>& events, const sf::Time& elapsed)
             movePlayer(m_pRight, m_c2.get(), events, elapsed);
         }
         else {
-            m_sound.onNotify(&m_ball->getShape(), obsEvents::score);
+            m_sound.onNotify(&m_ball->getShape(), Effects::score);
         }
 
         m_renderer.display();
@@ -103,8 +110,22 @@ void Game::addBall(double speed){
     m_gameState.addDrawable(items::BALL, &m_ball->getShape());
 }
 
+void Game::addItem() {
+	sf::Vector2u windowSize = m_window->getSize();
+	sf::Vector2f pos = sf::Vector2f(rand() % (windowSize.x - 20) + 10, rand() % (windowSize.y - 20) + 10);
+    m_powerItem = std::make_unique<PowerItem<ItemType::Bounce>>(pos);
+    m_gameState.addDrawable(items::POWERITEM, &m_powerItem->getShape());
+    m_powerItem->addObserver(&m_gameState);
+    m_powerItem->addObserver(&m_sound);
+}
+
 
 bool Game::handleCollisions(const sf::Time& elapsed){
+	if(m_powerItem && m_ball->doesCollide(m_powerItem->getShape())) {
+            m_powerItem->vanish();
+            m_powerItem.reset();
+		}
+
     if (m_pLeft.doesCollide(m_ball.get()->getShape()) || m_pRight.doesCollide(m_ball.get()->getShape())) {
         m_ball->rebounce(M_PI/2); //vertical paddle
         return false;
@@ -170,5 +191,12 @@ Controller* Game::createController(ControllerSetup setup, sf::RenderWindow& wind
 	}
     default:
         return nullptr;
+    }
+}
+
+void Game::handleSpecialEvents() {
+    auto e = m_gameState.getSpecialEvent();
+    if (e == SpecEvents::bounce) {
+        m_ball->rebounce(M_PI / 2);
     }
 }

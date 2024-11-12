@@ -8,5 +8,5 @@ enum class Controls {
 };
 
 enum class items {
-    P1, P2, BALL, SCORE1, SCORE2
+	P1, P2, BALL, SCORE1, SCORE2, POWERITEM
 };

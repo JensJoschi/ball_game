@@ -8,6 +8,7 @@
 #include "observer.h"
 #include "options.h"
 #include "paddle.h"
+#include "powerItem.h"
 #include "renderer.h"
 #include "sound.h"
 
@@ -36,7 +37,7 @@ class Game{
 	 */
 	explicit Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::RenderWindow& window);
 
-	~Game() = default; //window is ont owned by Game.
+    ~Game();
 
     /**
 	* @brief run 1 time step
@@ -53,6 +54,7 @@ class Game{
     Paddle m_pLeft;
     Paddle m_pRight;
     std::unique_ptr<Ball> m_ball;
+	std::unique_ptr<PowerItemBASE> m_powerItem;
 
     int m_score1;
     sf::Text m_score1Text;
@@ -63,12 +65,14 @@ class Game{
 
     Sound m_sound;
     void addBall(double speed);
+	void addItem();
     /**
 	* @brief Check for collisions and update game
     * Updates points, rebounces ball if neccessary
 	* returns true if someone scored
 	*/
     bool handleCollisions(const sf::Time& elapsed);
+    void handleSpecialEvents();
     void movePlayer(Paddle& paddle, Controller* control, const std::vector<sf::Event>& events, const sf::Time& elapsed);
     Controller* createController(ControllerSetup setup, sf::RenderWindow& window);
 };
