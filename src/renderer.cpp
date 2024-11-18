@@ -8,7 +8,7 @@
 /** @endcond */
 
 void Renderer::display(){
-	sf::Color currentColor = m_gameState.getCollision() >= 5 ? sf::Color::Cyan : sf::Color::Black;
+    sf::Color currentColor = m_gameState.getColor();
 	window->clear(currentColor);
 	for (const auto& obj : m_gameState.drawables){
         if (obj){ 

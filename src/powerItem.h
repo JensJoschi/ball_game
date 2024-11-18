@@ -3,6 +3,7 @@
 #include "physicalObject.h"
 /** @cond */
 #include <SFML/Graphics.hpp>
+#include <cassert>
 /** @endcond */
 
 
@@ -12,13 +13,14 @@ enum class ItemType {
 	SpeedUp,
 	SlowDown,
 	ChangeColor,
-	Bounce
+	Bounce,
+	COUNT
 };
 
 
 class PowerItemBASE : public PhysicalObject {
 public:
-	PowerItemBASE(sf::Vector2f pos) : PhysicalObject(std::make_unique<sf::CircleShape>(30)) {
+	PowerItemBASE(sf::Vector2f pos) : PhysicalObject(std::make_unique<sf::RectangleShape>(sf::Vector2f( 30,30))) {
 		m_shape->setPosition(pos.x, pos.y);
 	}
 	PowerItemBASE() = default;
@@ -59,7 +61,9 @@ public:
 		case ItemType::Bounce:
 			m_shape->setFillColor(sf::Color::White);
 			break;
-
+		case ItemType::COUNT:
+			assert (false && "ItemType COUNT created");
+			break;
 		}
 	}
 	ItemType getType() override {

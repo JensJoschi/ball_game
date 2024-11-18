@@ -19,6 +19,9 @@
 #include <cassert>
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <random>
 /** @endcond */
 
 
@@ -30,9 +33,8 @@ Game::Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::R
   m_pRight(sf::Vector2f{m_window->getSize().x - 20.0f,static_cast<float>(m_window->getSize().y/2.0)}, options.player2Size, 10.0f),
   m_score1(0), m_score2(0), m_ballVelocity(options.ballVelocity), m_score1Text(), m_score2Text(),
   m_c1(createController(std::move(p1), window)), m_c2(createController(std::move(p2), window)),
-  m_sound()
+	m_sound(), rng(std::random_device()())
 {
-    srand(0);
     if (!m_font.loadFromFile("arial.ttf")) {
         std::cerr << "Error loading font\n";
     }
@@ -112,8 +114,28 @@ void Game::addBall(double speed){
 
 void Game::addItem() {
 	sf::Vector2u windowSize = m_window->getSize();
-	sf::Vector2f pos = sf::Vector2f(rand() % (windowSize.x - 20) + 10, rand() % (windowSize.y - 20) + 10);
-    m_powerItem = std::make_unique<PowerItem<ItemType::Bounce>>(pos);
+	sf::Vector2f pos = sf::Vector2f(std::uniform_int_distribution <int>(10, windowSize.x - 10)(rng), std::uniform_int_distribution <int>(10, windowSize.y - 10)(rng));
+	ItemType itype = static_cast<ItemType>(std::uniform_int_distribution <int>(0, static_cast<int>(ItemType::COUNT)-1)(rng));
+    switch (itype){
+	case ItemType::Shrink:
+		m_powerItem = std::make_unique<PowerItem<ItemType::Shrink>>(pos);
+		break;
+	case ItemType::Enlarge:
+		m_powerItem = std::make_unique<PowerItem<ItemType::Enlarge>>(pos);
+		break;
+	case ItemType::SpeedUp:
+		m_powerItem = std::make_unique<PowerItem<ItemType::SpeedUp>>(pos);
+		break;
+	case ItemType::SlowDown:
+		m_powerItem = std::make_unique<PowerItem<ItemType::SlowDown>>(pos);
+		break;
+	case ItemType::ChangeColor:
+		m_powerItem = std::make_unique<PowerItem<ItemType::ChangeColor>>(pos);
+		break;
+	case ItemType::Bounce:
+		m_powerItem = std::make_unique<PowerItem<ItemType::Bounce>>(pos);
+		break;
+	}
     m_gameState.addDrawable(items::POWERITEM, &m_powerItem->getShape());
     m_powerItem->addObserver(&m_gameState);
     m_powerItem->addObserver(&m_sound);
@@ -196,7 +218,28 @@ Controller* Game::createController(ControllerSetup setup, sf::RenderWindow& wind
 
 void Game::handleSpecialEvents() {
     auto e = m_gameState.getSpecialEvent();
-    if (e == SpecEvents::bounce) {
+    switch (e) {
+    case SpecEvents::none:
+        break;
+    case SpecEvents::bounce:
         m_ball->rebounce(M_PI / 2);
+        break;
+    case SpecEvents::shrink:
+        m_pLeft.changeSize(0.5);
+        m_pRight.changeSize(0.5);
+        break;
+    case SpecEvents::expand:
+        m_pLeft.changeSize(2);
+        m_pRight.changeSize(2);
+        break;
+    case SpecEvents::colorChange:
+        m_gameState.setColor(sf::Color(std::uniform_int_distribution <int>(0, 255)(rng), std::uniform_int_distribution <int>(0, 255)(rng), std::uniform_int_distribution <int>(0, 255)(rng)));
+		break;
+    case SpecEvents::slow:
+		m_ball->changeSpeed(0.5);
+		break;
+    case SpecEvents::speedup:
+		m_ball->changeSpeed(1.5);
+		break;
     }
 }

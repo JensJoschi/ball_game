@@ -16,6 +16,7 @@ class Ball: public PhysicalObject {
     Ball() = delete; //game does not work with default ball that does not move
 
     void move(sf::Time elapsed) override;
+	void changeSpeed(double factor);
 
     /*! 
         *  \brief bounce the ball

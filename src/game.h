@@ -18,6 +18,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include <variant>
+#include <random>
 /** @endcond */
 
 /*! 
@@ -64,6 +65,7 @@ class Game{
     sf::Font m_font;
 
     Sound m_sound;
+    std::mt19937 rng;
     void addBall(double speed);
 	void addItem();
     /**

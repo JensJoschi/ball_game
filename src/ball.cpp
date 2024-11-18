@@ -36,3 +36,8 @@ void Ball::rebounce(double surfaceAngle) {
 sf::Color Ball::chooseColor() {
 	return sf::Color(rand() % 256, rand() % 256, rand() % 256);
 }
+
+void Ball::changeSpeed(double factor) {
+	assert(factor > 0);
+	m_velocity *= factor;
+}
