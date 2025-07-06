@@ -7,11 +7,6 @@
 #include <vector>
 /** @endcond */
 
-struct PlayerKBSetupParams{
-    sf::Keyboard::Key m_upKey;
-    sf::Keyboard::Key m_downKey;
-};
-
 class PlayerKB : public Controller{
     public:
     PlayerKB(const ControllerSettings general, const PlayerKBSetupParams specific);

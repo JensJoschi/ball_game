@@ -1,5 +1,4 @@
 #pragma once
-
 enum class Controls {
     KB = 0,
     MOUSE = 1,

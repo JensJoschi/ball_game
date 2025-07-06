@@ -8,7 +8,7 @@
 #include <string>
 /** @endcond */
 
-MenuBase::MenuBase(sf::RenderWindow& window, const std::vector<std::string>& items) : highlighted(0), m_window(window) {
+MenuBase::MenuBase(sf::RenderWindow& window, const std::vector<std::string>& items, Windows w) : highlighted(0), m_window(window), defaultReturnVal(w) {
     assert(m_font.loadFromFile("arial.ttf") && "Font not found");
 
     for (int i = 0; i < items.size(); ++i) {
@@ -22,8 +22,7 @@ MenuBase::MenuBase(sf::RenderWindow& window, const std::vector<std::string>& ite
     }
 }
 
-int MenuBase::update(const std::vector<sf::Event>& events) {
-    int returnVal = 0;
+Windows MenuBase::update(const std::vector<sf::Event>& events) {
     for (const auto& event : events) {
         if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::Up) {
@@ -33,15 +32,12 @@ int MenuBase::update(const std::vector<sf::Event>& events) {
                 highlighted = (highlighted + 1) % m_menuTexts.size();
             }
             else {
-                returnVal = handleKey(event);
-                if (returnVal != 0) {
-                    return returnVal;
-                }
+                return(handleKey(event));
             }
         }
     }
     display();
-    return returnVal;
+    return defaultReturnVal;
 }
 
 void MenuBase::display() {

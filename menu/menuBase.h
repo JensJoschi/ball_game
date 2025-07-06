@@ -7,6 +7,8 @@
 #include <string>
 /** @endcond */
 
+enum Windows { MAIN_MENU, OPTIONS, KEYBOARD, MOUSE, AI, START };
+
 /** @brief Base class for menus
  *
  * This class is the base
@@ -15,12 +17,12 @@
  */
 class MenuBase {
 public:
-    MenuBase(sf::RenderWindow& window, const std::vector<std::string>& items);
+    MenuBase(sf::RenderWindow& window, const std::vector<std::string>& items, Windows w);
 	virtual ~MenuBase() = default; //window is not owned by the menu
-	int update(const std::vector<sf::Event>& events);
+	Windows update(const std::vector<sf::Event>& events);
 	void display();
 	void highlight();
-	virtual int handleKey(sf::Event event) = 0;
+	virtual Windows handleKey(sf::Event event) = 0;
 
 protected:
     template <typename Enum>
@@ -34,7 +36,7 @@ protected:
     int highlighted;
     sf::RenderWindow& m_window;
     std::vector<sf::Text> m_menuTexts;
-
+    Windows defaultReturnVal;
 private:
     sf::Font m_font;
 };

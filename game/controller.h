@@ -8,14 +8,7 @@
 /** @endcond */
 
 
-/** @brief ControllerSettings struct
- *
- * This struct stores general settings that are valid for any controller (Controller is an abstract class). 
- * Derived classes of Controller contain another struct with specialized settings (e.g. keybinding for Keyboard controller).
- */
-struct ControllerSettings {
-	double sensitivity{ 0.0 }; /**< Describes how much an object is moved by 1 action call. */
-};
+
 
 class Controller{
     public:

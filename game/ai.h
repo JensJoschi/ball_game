@@ -9,9 +9,7 @@
 #include <vector>
 /** @endcond */
 
-struct AISetupParams{
-	items m_own;
-};
+
 
 /**
  * @brief AI class

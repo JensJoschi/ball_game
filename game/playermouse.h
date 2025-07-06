@@ -7,12 +7,6 @@
 #include <vector>
 /** @endcond */
 
-
-struct PlayerMouseParams{
-    const sf::Window& m_win;
-};
-
-
 class PlayerMouse : public Controller{
     public:
     PlayerMouse(const ControllerSettings general, const PlayerMouseParams specific); 

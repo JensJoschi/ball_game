@@ -1,4 +1,4 @@
-#include "options.h"
+#include "optionMenu.h"
 
 /** @cond */
 #include <iostream>
@@ -10,15 +10,16 @@
 
 
 OptionsMenu::OptionsMenu(sf::RenderWindow& window) 
-	: MenuBase(window, std::vector<std::string> {
-		"Player 1 size: " + std::to_string(Options{}.player1Size),
-		"Player 2 size: " + std::to_string(Options{}.player2Size),
-		"Ball velocity: " + std::to_string(Options{}.ballVelocity),
-		"Back"}), m_options(Options{})
-	 {
+: MenuBase(window, std::vector<std::string> {
+	"Player 1 size: " + std::to_string(Options{}.player1Size),
+	"Player 2 size: " + std::to_string(Options{}.player2Size),
+	"Ball velocity: " + std::to_string(Options{}.ballVelocity),
+	"Back"}, Windows::OPTIONS), 
+  m_options(Options{})
+{
 }
 
-int OptionsMenu::handleKey(sf::Event event) {
+Windows OptionsMenu::handleKey(sf::Event event) {
 	switch (event.key.code) {
 	case sf::Keyboard::Left:
 		if (highlighted == 0) {
@@ -46,13 +47,13 @@ int OptionsMenu::handleKey(sf::Event event) {
 		}
 		break;
 	case sf::Keyboard::Return:
-		if (highlighted == 3) return 1;
+		if (highlighted == 3) return Windows::MAIN_MENU;
 		break;
 	}
 	m_menuTexts[0].setString("Player 1 size: " + std::to_string(m_options.player1Size));
 	m_menuTexts[1].setString("Player 2 size: " + std::to_string(m_options.player2Size));
 	m_menuTexts[2].setString("Ball velocity: " + std::to_string(m_options.ballVelocity));
-	return 0;
+	return defaultReturnVal;
 }
 
 const Options& OptionsMenu::getOptions() const {
