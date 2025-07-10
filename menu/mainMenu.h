@@ -15,7 +15,7 @@
 	*/
 class MainMenu : public MenuBase {
 public:
-    MainMenu(sf::RenderWindow& window);
+    MainMenu(sf::RenderWindow& window, const std::string& fontpath);
 	/** @brief Handle keys
 	* cursors are used to move up/down in menu and to switch between control schemes for player 1 and 2.
 	* Enter is used to select an option. Return value is 0 for staying in main menu, 1 keyboard submenu, 2 for mouse submenu, 3 for AI submenu, 4 for options, 5 for starting the game.

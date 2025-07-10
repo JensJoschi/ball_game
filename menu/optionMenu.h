@@ -1,4 +1,5 @@
 #pragma once
+
 #include "menuBase.h"
 #include "options.h"
 /** @cond */
@@ -14,7 +15,7 @@
  */
 class OptionsMenu: public MenuBase {
 public:
-	OptionsMenu(sf::RenderWindow& window);
+	OptionsMenu(sf::RenderWindow& window, const std::string& fontpath);
 	const Options& getOptions() const;
 	Windows handleKey(sf::Event event) override;
 

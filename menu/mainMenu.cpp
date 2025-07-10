@@ -4,10 +4,11 @@
 #include <sfml/Graphics.hpp>
 #include <vector>
 #include <string>
+#include <iostream>
 /** @endcond */
 
-MainMenu::MainMenu(sf::RenderWindow& window) : 
-MenuBase(window, std::vector<std::string>{"Player 1", "Player 2", "Options", "Start"}, Windows::MAIN_MENU), 
+MainMenu::MainMenu(sf::RenderWindow& window, const std::string& fontpath) : 
+MenuBase(window, std::vector<std::string>{"Player 1", "Player 2", "Options", "Start"}, Windows::MAIN_MENU, fontpath), 
 m_p1(Controls::KB), 
 m_p2(Controls::KB) 
 {

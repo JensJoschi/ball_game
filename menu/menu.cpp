@@ -5,9 +5,9 @@
 #include "mainMenu.h"
 #include "optionMenu.h"
 
-Menu::Menu(sf::RenderWindow& w) : window(w), 
-    optionsMenu(std::make_unique<OptionsMenu> (w)), 
-    mainMenu(std::make_unique<MainMenu>(w)){
+Menu::Menu(sf::RenderWindow& w, const std::string& fontpath) : window(w), 
+    optionsMenu(std::make_unique<OptionsMenu> (w, fontpath)),
+    mainMenu(std::make_unique<MainMenu>(w, fontpath)){
 }
 
 void Menu::run() {

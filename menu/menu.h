@@ -4,16 +4,21 @@
 #include "mainMenu.h"
 #include "inputSettings.h"
 
+#ifdef BUILDING_MENU_DLL
+#define MENU_API __declspec(dllexport)
+#else
+#define MENU_API __declspec(dllimport)
+#endif
 
 class Menu {
 public:
-	Menu(sf::RenderWindow& window);
+	MENU_API Menu(sf::RenderWindow& window, const std::string& fontpath);
 	
-	void run();
+	MENU_API void run();
 
-	const Options& getOptions() const;
-	std::unique_ptr<InputSettings> getP1();
-	std::unique_ptr<InputSettings> getP2();
+	MENU_API const Options& getOptions() const;
+	MENU_API std::unique_ptr<InputSettings> getP1();
+	MENU_API std::unique_ptr<InputSettings> getP2();
 
 private:
 	sf::RenderWindow& window;

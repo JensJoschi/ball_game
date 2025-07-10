@@ -9,12 +9,12 @@
 /** @endcond */
 
 
-OptionsMenu::OptionsMenu(sf::RenderWindow& window) 
+OptionsMenu::OptionsMenu(sf::RenderWindow& window, const std::string& fontpath) 
 : MenuBase(window, std::vector<std::string> {
 	"Player 1 size: " + std::to_string(Options{}.player1Size),
 	"Player 2 size: " + std::to_string(Options{}.player2Size),
 	"Ball velocity: " + std::to_string(Options{}.ballVelocity),
-	"Back"}, Windows::OPTIONS), 
+	"Back"}, Windows::OPTIONS, fontpath),
   m_options(Options{})
 {
 }

@@ -6,11 +6,12 @@
 #include <cassert>
 #include <vector>
 #include <string>
+#include <filesystem>
 /** @endcond */
 
-MenuBase::MenuBase(sf::RenderWindow& window, const std::vector<std::string>& items, Windows w) : highlighted(0), m_window(window), defaultReturnVal(w) {
+MenuBase::MenuBase(sf::RenderWindow& window, const std::vector<std::string>& items, Windows w, const std::string& fontpath) : highlighted(0), m_window(window), defaultReturnVal(w) {
     assert(m_font.loadFromFile("arial.ttf") && "Font not found");
-
+    m_font.loadFromFile(fontpath);
     for (int i = 0; i < items.size(); ++i) {
         sf::Text text;
         text.setFont(m_font);

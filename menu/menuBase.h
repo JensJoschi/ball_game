@@ -17,7 +17,7 @@ enum Windows { MAIN_MENU, OPTIONS, KEYBOARD, MOUSE, AI, START };
  */
 class MenuBase {
 public:
-    MenuBase(sf::RenderWindow& window, const std::vector<std::string>& items, Windows w);
+    MenuBase(sf::RenderWindow& window, const std::vector<std::string>& items, Windows w, const std::string& fontpath);
 	virtual ~MenuBase() = default; //window is not owned by the menu
 	Windows update(const std::vector<sf::Event>& events);
 	void display();

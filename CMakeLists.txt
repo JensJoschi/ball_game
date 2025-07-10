@@ -2,26 +2,60 @@ cmake_minimum_required(VERSION 3.20)
 project(ball VERSION 0.1)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message(FATAL_ERROR "This project requires a 32-bit (Win32) build. Please configure accordingly.") #otherwise,linking against sfml will fail
+endif()
 
-#the following should prevent finding SFML 3 or at least error out, code is not compatible with SFML 3
-set (SFML_DIR "C:/tools/SFML-2.6.2/lib/cmake/SFML")
-find_package(SFML 2.6.2 COMPONENTS graphics window system REQUIRED)
+# --------- SFML -------------
+if(NOT DEFINED SFML_ROOT)
+    set (SFML_ROOT "C:/tools/SFML-2.6.0/") #prevents usage of sfml3, which is incompatible
+endif()
+set (SFML_DIR "${SFML_ROOT}/lib/cmake/SFML")
+set (SFML_BIN "${SFML_ROOT}/bin")
+find_package(SFML 2.6.0 COMPONENTS graphics window system REQUIRED)
 if(SFML_FOUND)
-  message(STATUS "SFML found")
+    message(STATUS "SFML found at ${SFML_DIR}")
 else()
   message(FATAL_ERROR "SFML not found")
 endif()
+set_target_properties(sfml-graphics PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release)
+set_target_properties(sfml-window   PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release)
+set_target_properties(sfml-system   PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out)
+# --------- output dir -------------
+foreach(CONFIG_TYPE IN ITEMS Debug Release RelWithDebInfo MinSizeRel)
+    string(TOUPPER ${CONFIG_TYPE} CONFIG_TYPE_UPPER)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG_TYPE_UPPER} ${CMAKE_SOURCE_DIR}/out/${CONFIG_TYPE})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONFIG_TYPE_UPPER} ${CMAKE_SOURCE_DIR}/out/${CONFIG_TYPE})
+endforeach()
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
-
+# --------- subdirectories -------------
 add_subdirectory(menu)
 #add_subdirectory(game)
 enable_testing()
 #add_subdirectory(tests) 
 
-#add_executable(ball main.cpp)
-#target_link_libraries(ball PUBLIC menu game)
+# --------- main executable -------------
+add_executable(ball main.cpp)
+target_link_libraries(ball PRIVATE menu sfml-graphics)
+
+target_include_directories(ball PRIVATE 
+	${CMAKE_SOURCE_DIR}/include
+	${CMAKE_SOURCE_DIR}/menu/ #public header of menu, temporarily
+) 
+
+# --------- post-build -------------
+add_custom_command(TARGET ball POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<$<CONFIG:Debug>:${SFML_BIN}/sfml-graphics-d-2.dll>
+        $<$<CONFIG:Debug>:${SFML_BIN}/sfml-window-d-2.dll>
+        $<$<CONFIG:Debug>:${SFML_BIN}/sfml-system-d-2.dll>
+        $<$<CONFIG:Release>:${SFML_BIN}/sfml-graphics-2.dll>
+        $<$<CONFIG:Release>:${SFML_BIN}/sfml-window-2.dll>
+        $<$<CONFIG:Release>:${SFML_BIN}/sfml-system-2.dll>
+        $<$<CONFIG:RelWithDebInfo>:${SFML_BIN}/sfml-graphics-2.dll>
+        $<$<CONFIG:RelWithDebInfo>:${SFML_BIN}/sfml-window-2.dll>
+        $<$<CONFIG:RelWithDebInfo>:${SFML_BIN}/sfml-system-2.dll>
+        "C:/Windows/Fonts/arial.ttf"
+        $<TARGET_FILE_DIR:ball>
+)
