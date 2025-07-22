@@ -1,13 +1,13 @@
 ﻿#pragma once
 
+#include "options.h"
+#include "inputSettings.h"
 #include "ball.h"
+#include "paddle.h"
 #include "controller.h"
-#include "controllerSetup.h"
 #include "enums.h"
 #include "gameState.h"
 #include "observer.h"
-#include "options.h"
-#include "paddle.h"
 #include "renderer.h"
 #include "sound.h"
 
@@ -17,7 +17,14 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include <variant>
+#include <vector>
 /** @endcond */
+
+#ifdef BUILDING_GAME_DLL
+#define GAME_API __declspec(dllexport)
+#else
+#define GAME_API __declspec(dllimport)
+#endif
 
 /*! 
     *  \brief Game class
@@ -34,9 +41,11 @@ class Game{
 	 * @param p2 Controller setup for player 2 (type, keys if applicable, difficulty of AI etc.)
 	 * @param window The window to render the game in
 	 */
-	explicit Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::RenderWindow& window);
+	GAME_API explicit Game(const Options& options, InputSettings p1, InputSettings p2, sf::RenderWindow& window);
 
-	~Game() = default; //window is ont owned by Game.
+    GAME_API ~Game() = default;
+
+    GAME_API void run();
 
     /**
 	* @brief run 1 time step
@@ -45,6 +54,7 @@ class Game{
     bool update(const std::vector<sf::Event>& events, const sf::Time& elapsed);
 
     private:
+        // pimpl - to do
     sf::RenderWindow* m_window;
 	GameState m_gameState; /**< contains current state (position etc) of all game objects */
 	Renderer m_renderer;
@@ -70,6 +80,6 @@ class Game{
 	*/
     bool handleCollisions(const sf::Time& elapsed);
     void movePlayer(Paddle& paddle, Controller* control, const std::vector<sf::Event>& events, const sf::Time& elapsed);
-    Controller* createController(ControllerSetup setup, sf::RenderWindow& window);
+    std::unique_ptr<Controller> createController(InputSettings setup, sf::RenderWindow& window);
 };
 

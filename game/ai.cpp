@@ -1,24 +1,23 @@
 #include "ai.h"
 #include "controller.h"
+#include "inputsettings.h"
+#include "command.h"
 #include "gameState.h"
 #include "enums.h"
-#include "command.h"
 /** @cond */
-#include <cassert>
 #include <SFML/Graphics.hpp>
+#include <cassert>
 /** @endcond */
 
-AI::AI(const ControllerSettings general, const AISetupParams specific) : Controller(general),
-m_params(specific), state(nullptr) {
-
-	assert(m_params.m_own == items::P1 || m_params.m_own == items::P2);
-
+AI::AI(ControllerSettings general, AISetupParams specific)
+: Controller(std::move(general)), params(std::move(specific)) {
+	assert(params.m_own == items::P1 || params.m_own == items::P2);
 }
 
 Command* AI::action(const std::vector<sf::Event>& events){
 	assert(state);
     auto ball = dynamic_cast<const sf::Transformable*>(state->drawables[(static_cast<int>(items::BALL))]);
-    auto ownID = dynamic_cast<const sf::Transformable*>(state->drawables[static_cast<int>(m_params.m_own)]);
+    auto ownID = dynamic_cast<const sf::Transformable*>(state->drawables[static_cast<int>(params.m_own)]);
 
     assert (ball && ownID);
 

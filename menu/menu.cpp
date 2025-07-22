@@ -11,11 +11,9 @@ Menu::Menu(sf::RenderWindow& w, const std::string& fontpath) : window(w),
 }
 
 void Menu::run() {
-    sf::Clock clock;
     Windows currentState{ Windows::MAIN_MENU };
 
     while (window.isOpen()) {
-        sf::Time elapsed = clock.restart();
         std::vector<sf::Event> events;
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -26,7 +24,6 @@ void Menu::run() {
         }
         window.clear();
 
-        std::unique_ptr<PlayerKBSetupParams> keyboardSettings;
         sf::Keyboard::Key up;
         sf::Keyboard::Key down;
         switch (currentState) {
@@ -40,13 +37,12 @@ void Menu::run() {
 //keyboardMenu to write
             up = sf::Keyboard::Key::W;
 			down = sf::Keyboard::Key::S;
-            keyboardSettings = std::make_unique<PlayerKBSetupParams>(200.0, up, down);
                 currentState = MAIN_MENU;
                 if (mainMenu->isOnP1()) {
-                    P1Inputs = std::move(keyboardSettings);
+                    P1Inputs = std::make_unique<InputSettings>(ControllerSettings{ 200.0 }, PlayerKBSetupParams(up, down));
 				}
                 else {
-                    P2Inputs = std::move(keyboardSettings);
+                    P2Inputs = std::make_unique<InputSettings>(ControllerSettings{ 200.0 }, PlayerKBSetupParams(up, down));
                 }
 			break;
         //mouse, AI to do

@@ -9,10 +9,10 @@
 
 class PlayerKB : public Controller{
     public:
-    PlayerKB(const ControllerSettings general, const PlayerKBSetupParams specific);
+    PlayerKB(ControllerSettings general, PlayerKBSetupParams specific);
     PlayerKB() = delete;
     Command* action(const std::vector<sf::Event>& events) override;
 
     private:
-    const PlayerKBSetupParams m_params;
+     PlayerKBSetupParams m_params;
 };

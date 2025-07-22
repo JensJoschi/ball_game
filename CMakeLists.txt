@@ -31,17 +31,18 @@ endforeach()
 
 # --------- subdirectories -------------
 add_subdirectory(menu)
-#add_subdirectory(game)
+add_subdirectory(game)
 enable_testing()
 #add_subdirectory(tests) 
 
 # --------- main executable -------------
 add_executable(ball main.cpp)
-target_link_libraries(ball PRIVATE menu sfml-graphics)
+target_link_libraries(ball PRIVATE menu game sfml-graphics)
 
 target_include_directories(ball PRIVATE 
 	${CMAKE_SOURCE_DIR}/include
 	${CMAKE_SOURCE_DIR}/menu/ #public header of menu, temporarily
+    ${CMAKE_SOURCE_DIR}/game/ #public header of game, temporarily
 ) 
 
 # --------- post-build -------------

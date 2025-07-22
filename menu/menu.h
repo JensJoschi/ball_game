@@ -24,6 +24,6 @@ private:
 	sf::RenderWindow& window;
 	std::unique_ptr<OptionsMenu> optionsMenu;
 	std::unique_ptr<MainMenu> mainMenu;
+	std::unique_ptr<InputSettings> P1Inputs;	
 	std::unique_ptr<InputSettings> P2Inputs;
-	std::unique_ptr<InputSettings> P1Inputs;
 };

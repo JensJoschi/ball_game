@@ -1,17 +1,17 @@
 #include "game.h"
-
-#include "ai.h"
-#include "ball.h"
-#include "command.h"
-#include "controller.h"
-#include "controllerSetup.h"
-#include "enums.h"
-#include "gameState.h"
 #include "options.h"
+#include "inputSettings.h"
+#include "ball.h"
 #include "paddle.h"
+#include "controller.h"
+#include "ai.h"
 #include "playerKB.h"
 #include "playermouse.h"
+#include "enums.h"
+#include "gameState.h"
+#include "observer.h"
 #include "renderer.h"
+#include "sound.h"
 
 /** @cond */
 #include <cmath>
@@ -19,10 +19,11 @@
 #include <cassert>
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include <variant>
 /** @endcond */
 
 
-Game::Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::RenderWindow& window)
+Game::Game(const Options& options, InputSettings p1, InputSettings p2, sf::RenderWindow& window)
 : m_window(&window),
   m_gameState(),
   m_renderer(m_window, m_gameState),
@@ -57,12 +58,30 @@ Game::Game(const Options& options, ControllerSetup p1, ControllerSetup p2, sf::R
     m_pRight.addObserver(&m_gameState);
 	m_pRight.addObserver(&m_sound);
     auto c = dynamic_cast<AI*> (m_c1.get());
-	if (c) c->connect(&m_gameState);
+	if (c) c->connect(&m_gameState); //AI needs to "see" the game
 	c = dynamic_cast<AI*> (m_c2.get());
 	if (c) c->connect(&m_gameState);
 
     addBall(m_ballVelocity);
     m_renderer.display();
+}
+
+void Game::run() {
+    sf::Clock clock;
+    while (m_window->isOpen()) {
+        sf::Time elapsed = clock.restart();
+        std::vector<sf::Event> events;
+        sf::Event event;
+        while (m_window->pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                m_window->close();
+            }
+            events.push_back(event);
+        }
+        m_window->clear();
+		bool finished = update(events, elapsed);
+        if (finished) return;
+    }
 }
 
 bool Game::update(const std::vector<sf::Event>& events, const sf::Time& elapsed){
@@ -154,21 +173,23 @@ void Game::movePlayer(Paddle& paddle, Controller* control, const std::vector<sf:
     }
 }
 
-Controller* Game::createController(ControllerSetup setup, sf::RenderWindow& window) {
-    switch (setup.control) {
-    case Controls::KB: {
-		assert(std::holds_alternative<PlayerKBSetupParams>(setup.specificSettings));
-		return new PlayerKB(std::move(setup.generalSettings), std::move(std::get<PlayerKBSetupParams>(setup.specificSettings)));
-    }
-    case Controls::MOUSE:{
-		assert(std::holds_alternative<PlayerMouseParams>(setup.specificSettings));
-		return new PlayerMouse(std::move(setup.generalSettings), std::move(std::get<PlayerMouseParams>(setup.specificSettings)));
-    }
-    case Controls::AI:{
-		assert(std::holds_alternative<AISetupParams>(setup.specificSettings));
-		return new AI(std::move(setup.generalSettings), std::move(std::get<AISetupParams>(setup.specificSettings)));
-	}
-    default:
-        return nullptr;
-    }
+template <typename>
+inline constexpr bool always_false = false;
+
+std::unique_ptr<Controller> Game::createController(InputSettings setup, sf::RenderWindow& window) {
+	auto general = std::move(setup.general);
+	auto specific = std::move(setup.specific);
+    auto visit_fcn = [gen = std::move(general)](auto&& spec) -> std::unique_ptr<Controller> {
+        using T = std::decay_t<decltype(spec)>;
+        if constexpr (std::is_same_v<T, PlayerKBSetupParams>) {
+            return std::make_unique<PlayerKB>(std::move(gen), std::forward<T>(spec));
+        } else if constexpr (std::is_same_v<T, PlayerMouseParams>) {
+            return std::make_unique<PlayerMouse>(std::move(gen), std::forward<T>(spec));
+        } else if constexpr (std::is_same_v<T, AISetupParams>) {
+			return std::make_unique<AI>(std::move(gen), std::forward<T>(spec));
+        } else {
+            static_assert(always_false<T>, "Unknown controller type");
+        }
+	};
+	return std::visit(visit_fcn, std::move(specific));
 }

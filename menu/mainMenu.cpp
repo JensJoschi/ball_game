@@ -40,8 +40,9 @@ Windows MainMenu::handleKey(sf::Event event) {
         }
         break;
     case sf::Keyboard::Return: //open submenu or start game
-        if ((highlighted == 1 && getP1() == Controls::KB) ||
-            (highlighted == 2 && getP2() == Controls::KB)) {
+
+        if ((highlighted == 0 && getP1() == Controls::KB) ||
+            (highlighted == 1 && getP2() == Controls::KB)) {
                 return Windows::KEYBOARD;
         }
         else if (highlighted == 2) { return Windows::OPTIONS; }
