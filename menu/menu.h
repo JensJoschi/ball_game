@@ -21,6 +21,8 @@ public:
 	MENU_API std::unique_ptr<InputSettings> getP2();
 
 private:
+	std::unique_ptr<InputSettings> createStandardInput(Controls c, items  i);
+
 	sf::RenderWindow& window;
 	std::unique_ptr<OptionsMenu> optionsMenu;
 	std::unique_ptr<MainMenu> mainMenu;

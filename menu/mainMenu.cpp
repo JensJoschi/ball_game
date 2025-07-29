@@ -17,39 +17,39 @@ m_p2(Controls::KB)
 }
 
 Windows MainMenu::handleKey(sf::Event event) {
-	//highlight id follows menu items: 0= p1, 1= p2, 2= options, 3= start
-    switch (event.key.code) {
-    case sf::Keyboard::Left: //switch player 1/2 control
-        if (highlighted == 0) {
-            m_p1 = decrementEnum(m_p1, Controls::COUNT);
-            m_menuTexts[0].setString("Player 1: " + castEnumToString(m_p1));
+    auto handlePlayerInput = [&](int playerIndex, Controls& control) {
+        if (event.key.code == sf::Keyboard::Left) {
+            control = decrementEnum(control, Controls::COUNT);
+            m_menuTexts[playerIndex].setString("Player " + std::to_string(playerIndex + 1) + ": " + castEnumToString(control));
         }
-        if (highlighted == 1) {
-            m_p2 = decrementEnum(m_p2, Controls::COUNT);
-            m_menuTexts[1].setString("Player 2: " + castEnumToString(m_p2));
+        else if (event.key.code == sf::Keyboard::Right) {
+            control = incrementEnum(control, Controls::COUNT);
+            m_menuTexts[playerIndex].setString("Player " + std::to_string(playerIndex + 1) + ": " + castEnumToString(control));
         }
-        break;
-    case sf::Keyboard::Right: //switch player 1/2 control
-        if (highlighted == 0) {
-            m_p1 = incrementEnum(m_p1, Controls::COUNT);
-            m_menuTexts[0].setString("Player 1: " + castEnumToString(m_p1));
-        }
-        if (highlighted == 1) {
-            m_p2 = incrementEnum(m_p2, Controls::COUNT);
-            m_menuTexts[1].setString("Player 2: " + castEnumToString(m_p2));
-        }
-        break;
-    case sf::Keyboard::Return: //open submenu or start game
-
-        if ((highlighted == 0 && getP1() == Controls::KB) ||
-            (highlighted == 1 && getP2() == Controls::KB)) {
+        else if (event.key.code == sf::Keyboard::Return) {
+            if (control == Controls::KB) {
                 return Windows::KEYBOARD;
+            } //no mouse or ai window yet
         }
-        else if (highlighted == 2) { return Windows::OPTIONS; }
-        else if (highlighted == 3) { return Windows::START; }
-        else { break; } //AI and MOUSE have no submenu yet
-    default:
-        break;
+        return defaultReturnVal;
+        };
+
+    switch (highlighted) {
+        case 0: // Player 1
+            return handlePlayerInput(0, m_p1);
+        case 1: // Player 2
+            return handlePlayerInput(1, m_p2);
+		case 2: // Options
+            if (event.key.code == sf::Keyboard::Return) {
+                return Windows::OPTIONS;
+            }
+			break;
+        case 3: // Start
+            if (event.key.code == sf::Keyboard::Return) {
+                return Windows::START;
+			}
+        default:
+            break;
     }
     return defaultReturnVal;
 }

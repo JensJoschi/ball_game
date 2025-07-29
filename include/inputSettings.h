@@ -12,7 +12,7 @@ struct ControllerSettings {
 };
 
 struct PlayerMouseParams{
-	const sf::Window* m_win;
+
 };
 
 struct PlayerKBSetupParams{

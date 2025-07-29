@@ -10,7 +10,7 @@
 /** @endcond */
 
 AI::AI(ControllerSettings general, AISetupParams specific)
-: Controller(std::move(general)), params(std::move(specific)) {
+: Controller(std::move(general)), params(std::move(specific)), state(nullptr) {
 	assert(params.m_own == items::P1 || params.m_own == items::P2);
 }
 

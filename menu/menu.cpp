@@ -24,8 +24,6 @@ void Menu::run() {
         }
         window.clear();
 
-        sf::Keyboard::Key up;
-        sf::Keyboard::Key down;
         switch (currentState) {
         case MAIN_MENU:
             currentState = mainMenu->update(events);
@@ -34,28 +32,38 @@ void Menu::run() {
             currentState = optionsMenu->update(events);
             break;
 		case KEYBOARD:
-//keyboardMenu to write
-            up = sf::Keyboard::Key::W;
-			down = sf::Keyboard::Key::S;
-                currentState = MAIN_MENU;
-                if (mainMenu->isOnP1()) {
-                    P1Inputs = std::make_unique<InputSettings>(ControllerSettings{ 200.0 }, PlayerKBSetupParams(up, down));
-				}
-                else {
-                    P2Inputs = std::make_unique<InputSettings>(ControllerSettings{ 200.0 }, PlayerKBSetupParams(up, down));
-                }
+			currentState = Windows::MAIN_MENU; //keyboardMenu to write
 			break;
-        //mouse, AI to do
+        //mouse, AI have no menu yet
 
         case START:
+            if (!P1Inputs) {
+                P1Inputs = createStandardInput(mainMenu->getP1(), items::P1);
+            }
+            if (!P2Inputs) {
+                P2Inputs = createStandardInput(mainMenu->getP2(), items::P2);
+			}
             return;
-			//startGame with auto p1 = getP1(), auto p2 = getP2(), auto opt = getOptions(), p1.getType(), p2.getType(), window
+			//startGame with auto p1 = getP1(), auto p2 = getP2(), auto opt = getOptions(), window
 
 
         default:
             currentState = MAIN_MENU;
             break;
         }
+    }
+}
+
+std::unique_ptr<InputSettings> Menu::createStandardInput(Controls c, items  i) {
+    switch (c) {
+    case Controls::KB:
+        return std::make_unique<InputSettings>(ControllerSettings{ 200.0 }, PlayerKBSetupParams(sf::Keyboard::Key::W, sf::Keyboard::Key::S));
+    case Controls::MOUSE:
+        return std::make_unique<InputSettings>(ControllerSettings{ 200.0 }, PlayerMouseParams());
+    case Controls::AI:
+        return std::make_unique<InputSettings>(ControllerSettings{ 200.0 }, AISetupParams(i));
+    default:
+        return nullptr;
     }
 }
 

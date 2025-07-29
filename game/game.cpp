@@ -179,12 +179,12 @@ inline constexpr bool always_false = false;
 std::unique_ptr<Controller> Game::createController(InputSettings setup, sf::RenderWindow& window) {
 	auto general = std::move(setup.general);
 	auto specific = std::move(setup.specific);
-    auto visit_fcn = [gen = std::move(general)](auto&& spec) -> std::unique_ptr<Controller> {
+    auto visit_fcn = [gen = std::move(general), &window](auto&& spec) -> std::unique_ptr<Controller> {
         using T = std::decay_t<decltype(spec)>;
         if constexpr (std::is_same_v<T, PlayerKBSetupParams>) {
             return std::make_unique<PlayerKB>(std::move(gen), std::forward<T>(spec));
         } else if constexpr (std::is_same_v<T, PlayerMouseParams>) {
-            return std::make_unique<PlayerMouse>(std::move(gen), std::forward<T>(spec));
+            return std::make_unique<PlayerMouse>(std::move(gen), std::forward<T>(spec), window);
         } else if constexpr (std::is_same_v<T, AISetupParams>) {
 			return std::make_unique<AI>(std::move(gen), std::forward<T>(spec));
         } else {

@@ -9,11 +9,12 @@
 
 class PlayerMouse : public Controller{
     public:
-    PlayerMouse(const ControllerSettings general, const PlayerMouseParams specific); 
+        PlayerMouse(ControllerSettings general, PlayerMouseParams specific, sf::RenderWindow& window);
     PlayerMouse() = delete;
     Command* action(const std::vector<sf::Event>& events) override;
 
     private:
-    const PlayerMouseParams m_params;
+	sf::RenderWindow* m_window;
+    PlayerMouseParams m_params;
     sf::Vector2i m_previousMouse;
 };

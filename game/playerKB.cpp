@@ -1,15 +1,16 @@
 #include "playerKB.h"
+#include "controller.h"
+#include "inputsettings.h"
 #include "command.h"
 
 /** @cond */
-#include <iostream>
 #include <cassert>
 #include <memory>
 #include <vector>
 #include <SFML/Graphics.hpp>
 /** @endcond */
 
-PlayerKB::PlayerKB(const ControllerSettings general, const PlayerKBSetupParams specific)
+PlayerKB::PlayerKB(ControllerSettings general, PlayerKBSetupParams specific)
     : Controller(std::move(general)), m_params(std::move(specific)) {}
 
 Command* PlayerKB::action(const std::vector<sf::Event>& events){
