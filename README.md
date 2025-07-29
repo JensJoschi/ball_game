@@ -25,11 +25,12 @@ The game menu and the game itself are built as shared libraries (dll). A main ex
 ## Menu  
 
 All menus derive from a common base class (MenuBase) which allows displaying, scrolling through and highlighting text items. The return type of its update function is an enum (Windows), describing which menu shall be opened next.   
+InputSettings and Options: see section "Shared objects" below.
 
 ![UML overview](doc/menu.png)
 
-The main Menu saves the current selection of player types (enum Controls), the optionsMenu current general options (speed, paddle size), and a future Keyboard menu will save keybindings.  
-The main class Menu is not seperated yet from an API and thus serves a double function: it contains all menus and manages switching between them, and it responds to external queries.  
+The main Menu saves the current selection of player types, the optionsMenu current general options (speed, paddle size), and a future Keyboard menu will save keybindings.  
+The main class Menu is actually called MenuImpl in the code (Menu is the public-facing API), shortened here for clarity. It contains all menus and manages switching between them, and it responds to external queries.  
 The menu will only be called once. To avoid unneccesary copies and clarify ownership, objects are moved upon query (not yet for options, passed as const ref). 
 
 ## Shared objects  
@@ -45,7 +46,7 @@ The core of the game consists of a Game object, Ball and Paddle. Balls and Paddl
 ![UML overview](doc/game.png)  
 
 **Inputs to Game**  
-The game requires controller settings and options upon startup. These structs are passed by value (options currently as const ref) and moved to the appropriate object (zero-copy transfer); the inputSettings struct is decomposed and the variant resolved in the process.The settings end up in the Controller class, with general settings in the base Controller and specific settings in the appropriate derived class (AI/PlayerKB/PlayerMouse). The Controller classes are used to store/cue movement commands (see below).
+The game (GameImpl in the code) requires controller settings and options upon startup. These structs are passed by value (options currently as const ref) and moved to the appropriate object (zero-copy transfer); the inputSettings struct is decomposed and the variant resolved in the process.The settings end up in the Controller class, with general settings in the base Controller and specific settings in the appropriate derived class (AI/PlayerKB/PlayerMouse). The Controller classes are used to store/cue movement commands (see below).
 
 **Visibility and collision**  
 The PhysicalObject has a shape which is used for displaying and calculating collisions with other shapes. GameState tracks the identity of all objects that are currently in the game.
