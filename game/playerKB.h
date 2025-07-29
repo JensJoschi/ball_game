@@ -14,5 +14,5 @@ class PlayerKB : public Controller{
     Command* action(const std::vector<sf::Event>& events) override;
 
     private:
-     PlayerKBSetupParams m_params;
+    const PlayerKBSetupParams m_params;
 };

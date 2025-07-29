@@ -15,6 +15,6 @@ class PlayerMouse : public Controller{
 
     private:
 	sf::RenderWindow* m_window;
-    PlayerMouseParams m_params;
+    const PlayerMouseParams m_params;
     sf::Vector2i m_previousMouse;
 };

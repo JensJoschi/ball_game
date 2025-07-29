@@ -26,5 +26,5 @@ class AI : public Controller{
 
     private:
     const GameState* state;
-    AISetupParams params;
+    const AISetupParams params;
 };

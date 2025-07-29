@@ -26,7 +26,7 @@ class Controller{
 
     protected:
 	
-        ControllerSettings m_settings;
+    const ControllerSettings m_settings;
 	std::unique_ptr<Command> up; /**< Stores order to move upwards. See command.h. */
 	std::unique_ptr<Command> down; /**< Stores order to move downwards. See command.h. */
 };
