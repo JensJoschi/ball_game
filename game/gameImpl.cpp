@@ -20,6 +20,9 @@
 #include <cassert>
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <random>
 #include <variant>
 /** @endcond */
 
@@ -32,9 +35,8 @@ GameImpl::GameImpl(const Options& options, InputSettings p1, InputSettings p2, s
     m_pRight(sf::Vector2f{ m_window->getSize().x - 20.0f,static_cast<float>(m_window->getSize().y / 2.0) }, options.player2Size, 10.0f),
     m_score1(0), m_score2(0), m_ballVelocity(options.ballVelocity), m_score1Text(), m_score2Text(),
     m_c1(createController(std::move(p1), window)), m_c2(createController(std::move(p2), window)),
-    m_sound()
+    m_sound(), rng(std::random_device()())
 {
-    srand(0);
     if (!m_font.loadFromFile("arial.ttf")) {
         std::cerr << "Error loading font\n";
     }
@@ -64,6 +66,7 @@ GameImpl::GameImpl(const Options& options, InputSettings p1, InputSettings p2, s
     if (c) c->connect(&m_gameState);
 
     addBall(m_ballVelocity);
+    addItem();
     m_renderer.display();
 }
 
@@ -92,9 +95,11 @@ bool GameImpl::update(const std::vector<sf::Event>& events, const sf::Time& elap
     if (m_gameState.isCollisionThresReached()) {
         m_ballVelocity += 25;
         addBall(m_ballVelocity);
-        return false;
+		addItem();
+		return false;
     }
     else {
+        handleSpecialEvents();
         m_ball->move(elapsed);
         bool someoneScored = handleCollisions(elapsed);
         if (!someoneScored) {
@@ -102,7 +107,7 @@ bool GameImpl::update(const std::vector<sf::Event>& events, const sf::Time& elap
             movePlayer(m_pRight, m_c2.get(), events, elapsed);
         }
         else {
-            m_sound.onNotify(&m_ball->getShape(), obsEvents::score);
+            m_sound.onNotify(&m_ball->getShape(), Effects::score);
         }
 
         m_renderer.display();
@@ -123,8 +128,41 @@ void GameImpl::addBall(double speed) {
     m_gameState.addDrawable(items::BALL, &m_ball->getShape());
 }
 
+void GameImpl::addItem() {
+	sf::Vector2u windowSize = m_window->getSize();
+	sf::Vector2f pos = sf::Vector2f(std::uniform_int_distribution <int>(10, windowSize.x - 10)(rng), std::uniform_int_distribution <int>(10, windowSize.y - 10)(rng));
+	ItemType itype = static_cast<ItemType>(std::uniform_int_distribution <int>(0, static_cast<int>(ItemType::COUNT)-1)(rng));
+    switch (itype){
+	case ItemType::Shrink:
+		m_powerItem = std::make_unique<PowerItem<ItemType::Shrink>>(pos);
+		break;
+	case ItemType::Enlarge:
+		m_powerItem = std::make_unique<PowerItem<ItemType::Enlarge>>(pos);
+		break;
+	case ItemType::SpeedUp:
+		m_powerItem = std::make_unique<PowerItem<ItemType::SpeedUp>>(pos);
+		break;
+	case ItemType::SlowDown:
+		m_powerItem = std::make_unique<PowerItem<ItemType::SlowDown>>(pos);
+		break;
+	case ItemType::ChangeColor:
+		m_powerItem = std::make_unique<PowerItem<ItemType::ChangeColor>>(pos);
+		break;
+	case ItemType::Bounce:
+		m_powerItem = std::make_unique<PowerItem<ItemType::Bounce>>(pos);
+		break;
+	}
+    m_gameState.addDrawable(items::POWERITEM, &m_powerItem->getShape());
+    m_powerItem->addObserver(&m_gameState);
+    m_powerItem->addObserver(&m_sound);
+}
 
 bool GameImpl::handleCollisions(const sf::Time& elapsed) {
+	if(m_powerItem && m_ball->doesCollide(m_powerItem->getShape())) {
+            m_powerItem->vanish();
+            m_powerItem.reset();
+		}
+
     if (m_pLeft.doesCollide(m_ball.get()->getShape()) || m_pRight.doesCollide(m_ball.get()->getShape())) {
         m_ball->rebounce(M_PI / 2); //vertical paddle
         return false;
@@ -197,4 +235,31 @@ std::unique_ptr<Controller> GameImpl::createController(InputSettings setup, sf::
         }
         };
     return std::visit(visit_fcn, std::move(specific));
+}
+void GameImpl::handleSpecialEvents() {
+    auto e = m_gameState.getSpecialEvent();
+    switch (e) {
+    case SpecEvents::none:
+        break;
+    case SpecEvents::bounce:
+        m_ball->rebounce(M_PI / 2);
+        break;
+    case SpecEvents::shrink:
+        m_pLeft.changeSize(0.5);
+        m_pRight.changeSize(0.5);
+        break;
+    case SpecEvents::expand:
+        m_pLeft.changeSize(2);
+        m_pRight.changeSize(2);
+        break;
+    case SpecEvents::colorChange:
+        m_gameState.setColor(sf::Color(std::uniform_int_distribution <int>(0, 255)(rng), std::uniform_int_distribution <int>(0, 255)(rng), std::uniform_int_distribution <int>(0, 255)(rng)));
+		break;
+    case SpecEvents::slow:
+		m_ball->changeSpeed(0.5);
+		break;
+    case SpecEvents::speedup:
+		m_ball->changeSpeed(1.5);
+		break;
+    }
 }

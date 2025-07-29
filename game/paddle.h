@@ -21,8 +21,10 @@ class Paddle: public PhysicalObject {
     }
 	explicit Paddle(std::unique_ptr<sf::Shape> shape) : PhysicalObject(std::move(shape)) {}
 	void move(sf::Time elapsed) override {}; //no inertia, no acceleration or other physics here. 
-    void changeSize(double size) {
-        assert(size > 0);
+    void changeSize(float factor) {
+        assert(factor > 0);
+        sf::Vector2f currsize = static_cast<sf::RectangleShape*>(m_shape.get())->getSize();
+		static_cast<sf::RectangleShape*>(m_shape.get())->setSize(currsize * factor);
     }
     ~Paddle() = default;
 };

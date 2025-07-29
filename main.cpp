@@ -23,7 +23,7 @@ int main() {
            m.getOptions(), 
            std::move(p1),
 		   std::move(p2),
-           window);
+                        window);
     game.run();
     std::cout << "game over.";
 }
