@@ -33,7 +33,7 @@ endforeach()
 add_subdirectory(menu)
 add_subdirectory(game)
 enable_testing()
-#add_subdirectory(tests) 
+add_subdirectory(tests) 
 
 # --------- main executable -------------
 add_executable(ball main.cpp)

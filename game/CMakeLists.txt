@@ -28,6 +28,13 @@ target_include_directories(game PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
+add_library(game_static STATIC ${GAMEFILES}) #for unit tests
+target_link_libraries(game_static PRIVATE sfml-graphics sfml-window sfml-system)
+target_include_directories(game_static PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR} 
+    ${CMAKE_SOURCE_DIR}/include
+)
+
 set_target_properties(game PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/out/${CONFIG_TYPE}"  
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/out/${CONFIG_TYPE}" 
