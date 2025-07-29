@@ -6,6 +6,7 @@ set (GAMEFILES
     "ball.cpp" 
     "command.cpp"  
     "game.cpp" 
+    "gameImpl.cpp"
     "gameState.cpp" 
     "physicalObject.cpp" 
     "playerKB.cpp"
