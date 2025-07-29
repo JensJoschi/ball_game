@@ -3,6 +3,7 @@ message(STATUS "Configuring menu dll...")
 
 set (MENUFILES 
     "menu.cpp" #API
+    "menuImpl.cpp"
     "menuBase.cpp"
     "mainMenu.cpp"
     "optionMenu.cpp"
