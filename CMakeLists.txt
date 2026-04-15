@@ -2,17 +2,20 @@ cmake_minimum_required(VERSION 3.20)
 project(ball VERSION 0.1)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    message(FATAL_ERROR "This project requires a 32-bit (Win32) build. Please configure accordingly.") #otherwise,linking against sfml will fail
+SET(CMAKE_PREFIX_PATH "C:/Qt/6.7.3/msvc2022_64") 
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+    message(FATAL_ERROR "This project requires a 64-bit build. Please configure accordingly.")
 endif()
 
 # --------- SFML -------------
 if(NOT DEFINED SFML_ROOT)
-    set (SFML_ROOT "C:/tools/SFML-2.6.0/") #prevents usage of sfml3, which is incompatible
+    set (SFML_ROOT "C:/tools/SFML-2.6.2/") #prevents usage of sfml3, which is incompatible
 endif()
 set (SFML_DIR "${SFML_ROOT}/lib/cmake/SFML")
 set (SFML_BIN "${SFML_ROOT}/bin")
-find_package(SFML 2.6.0 COMPONENTS graphics window system REQUIRED)
+find_package(SFML 2.6.2 COMPONENTS graphics window system REQUIRED)
 if(SFML_FOUND)
     message(STATUS "SFML found at ${SFML_DIR}")
 else()
@@ -34,6 +37,7 @@ add_subdirectory(menu)
 add_subdirectory(game)
 enable_testing()
 add_subdirectory(tests) 
+add_subdirectory(QTMenu)
 
 # --------- main executable -------------
 add_executable(ball main.cpp)
