@@ -15,13 +15,14 @@ class Menu : public QWidget
     Q_OBJECT
 
 public:
-    explicit Menu(const std::vector<MenuItemBase*>& content, QWidget *parent = nullptr);
+    explicit Menu(QWidget *parent = nullptr);
+    void addItems(const std::vector<MenuItemBase*>&);
     std::vector<int> getStates() const;
     void onUp(); //cycle through items.
     void onDown();
     void keyPressEvent(QKeyEvent* event) override;
 private:
     int highlighted = 0;
-    std::vector<MenuItemBase*> items; //should be a Qlist
+    std::vector<MenuItemBase*> items;
 };
 #endif // MENU_H

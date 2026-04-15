@@ -7,30 +7,33 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
+#include "helpers.h"
+
 class MenuItemBase: public QWidget
 {
     Q_OBJECT
 public:
-    explicit MenuItemBase(const QString& l, QWidget* parent = nullptr);
+    explicit MenuItemBase(const QString& l, Menus a = Menus::none, QWidget* parent = nullptr);
     virtual void onRight(){};
     virtual void onLeft(){};
-    void onHit() {emit activated();}
+    void onHit() {emit openMenu(static_cast<int> (action));}
     virtual int getState() const {return 0;}
     void changeHighlighting(bool enable);
 
 signals:
-    void activated();
+    int openMenu(int id);
 
 protected:
     QLabel* description;
     QHBoxLayout* layout;
+    Menus action;
 };
 
 
 class MenuItemInt final: public MenuItemBase{
     Q_OBJECT
 public:
-    explicit MenuItemInt(const QString& l, int c, QWidget* parent = nullptr);
+    explicit MenuItemInt(const QString& l, int c, Menus a = Menus::none, QWidget* parent = nullptr);
     void onRight() override;
     void onLeft()  override;
     int getState() const override;
@@ -42,7 +45,7 @@ private:
 class MenuItemQStrList final: public MenuItemBase{
     Q_OBJECT
 public:
-    explicit MenuItemQStrList(const QString& l, const QStringList& c, QWidget* parent = nullptr);
+    explicit MenuItemQStrList(const QString& l, const QStringList& c, Menus a = Menus::none, QWidget* parent = nullptr);
     void onRight() override;
     void onLeft()  override;
     int getState() const override;

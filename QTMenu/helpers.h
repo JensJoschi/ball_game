@@ -15,4 +15,12 @@ concept HasCount = requires {
     T::COUNT;
 };
 
+enum class Menus{
+    mainMenu = 0,
+    optionsMenu = 1,
+    quit = 2,
+    none = 3
+};
+
+
 #endif // HELPERS_H

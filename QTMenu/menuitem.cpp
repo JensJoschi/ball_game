@@ -1,8 +1,9 @@
 #include "menuitem.h"
 #include <QStyle>
+#include "helpers.h"
 
-MenuItemBase::MenuItemBase(const QString& l, QWidget* parent):
-    QWidget(parent)
+MenuItemBase::MenuItemBase(const QString& l, Menus a, QWidget* parent):
+    QWidget(parent), action(a)
 {
     layout = new QHBoxLayout(this);
     description = new QLabel(l, this);
@@ -13,14 +14,13 @@ MenuItemBase::MenuItemBase(const QString& l, QWidget* parent):
 void MenuItemBase::changeHighlighting(bool enable){
     setProperty("highlighted", enable);
     setStyle(nullptr); //forces redrawing, not sure if safe
-
     //OR: <<for each QLabel>>
     // style()->unpolish(description);
     // style()->polish(description);
 }
 
-MenuItemInt::MenuItemInt(const QString& l, int c, QWidget* parent):
-    MenuItemBase(l, parent), content(c)
+MenuItemInt::MenuItemInt(const QString& l, int c, Menus a, QWidget* parent):
+    MenuItemBase(l, a, parent), content(c)
 {
     contentlabel = new QLabel(QString::number(c));
     layout->addWidget(contentlabel);
@@ -43,8 +43,8 @@ int MenuItemInt::getState() const {
 
 
 MenuItemQStrList::MenuItemQStrList(
-    const QString& l, const QStringList& c, QWidget* parent):
-    MenuItemBase(l, parent), content(c), index(0)
+    const QString& l, const QStringList& c, Menus a, QWidget* parent):
+    MenuItemBase(l, a, parent), content(c), index(0)
 {
     assert (content.size() >0);
     contentlabel = new QLabel(content[index]);

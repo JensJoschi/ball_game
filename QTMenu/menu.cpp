@@ -6,21 +6,22 @@
 #include <QKeyEvent>
 #include "menuitem.h"
 
-Menu::Menu(const std::vector<MenuItemBase*>& itms, QWidget *parent)
+Menu::Menu(QWidget *parent)
     : QWidget(parent), highlighted(0)
 {
     setWindowTitle(tr("Menu"));
     setFocusPolicy(Qt::StrongFocus);
     setMouseTracking(true);
+}
 
+void Menu::addItems(const std::vector<MenuItemBase*>& itms){
     QVBoxLayout* layout = new QVBoxLayout(this);
     for (const auto& content:itms){
         items.push_back(content);
         layout->addWidget(content);
     }
-    setLayout(layout);
-
     items[0]->changeHighlighting(true);
+    setLayout(layout);
 }
 
 void Menu::keyPressEvent(QKeyEvent* event){
@@ -29,7 +30,7 @@ void Menu::keyPressEvent(QKeyEvent* event){
     case Qt::Key_Down: onDown(); break;
     case Qt::Key_Left: items[highlighted]->onLeft(); break;
     case Qt::Key_Right: items[highlighted]->onRight(); break;
-    case Qt::Key_Enter: items[highlighted]->onHit(); break;
+    case Qt::Key_Return: items[highlighted]->onHit(); break;
     default: QWidget::keyPressEvent(event);
     }
 }
