@@ -14,6 +14,7 @@ Rules mostly follow standard Pong implementations, with some exceptions:
 # How to play
 In the main menu, use arrow keys on Player1 and Player2 to choose between Keyboard, Mouse and AI.
 Hit Return on Options to set further settings, or on Start to begin the game.
+Another (slightly nicer but non-functional) menu will pop up. This menu is the manually created one. Simply hit start again.
 Keys for Keyboard control are W and S for either player. An option to change keybindings will be added later.
 
 # Repository overview  
