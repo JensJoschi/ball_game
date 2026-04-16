@@ -59,11 +59,13 @@ Options QtMenu::getOptions() const{
 	return Options { static_cast<float>(states[0]), static_cast<float>(states[1]), states[2] };
 	//this menu only stores ints, float was too much precision for size/velocity anyway.
 }
-//InputSettings QtMenu::getP1() const {
-//	//to do
-//	assert(false && "qtmenu function not implemented");
-//}
-//InputSettings QtMenu::getP2() const {
-//	//to do
-//	assert(false && "qtmenu function not implemented");
-//}
+Controls QtMenu::getP1() const {
+	int index = mainMenu->getStates()[0];
+	assert(index >= 0 && index < static_cast<int>(Controls::COUNT));
+	return Controls(index);
+}
+Controls QtMenu::getP2() const {
+	int index = mainMenu->getStates()[1];
+	assert(index >= 0 && index < static_cast<int>(Controls::COUNT));
+	return Controls(index);
+}

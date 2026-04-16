@@ -1,9 +1,7 @@
 # Overview  
 This is a Pong game for demonstration purposes. It is on purpose created like a larger game engine (and a bit overengineered) to demonstrate various design patterns and architecture considerations.
-Patterns are mostly implemented manually (observer, command, etc.), but for the Event Loop and rendering purposes SFML was used.  
-Menu and core game logic are separately compiled. Two versions of the menu exist: a state-based manual implementation using SFML for rendering, and a qt-based version. 
-
-[work in-progress, qt replacing the SFML-based version. currently 2 menus show up on running]
+Patterns are mostly implemented manually (observer, command, etc.), but for the Event Loop and rendering SFML was used.  
+Menu and core game logic are separately compiled. Two versions of the menu exist: a state-based manual implementation using SFML for rendering, and a qt-based version. Only the qt-based version is currently in use.
 
 Rules mostly follow standard Pong implementations, with some exceptions:
 - Each side can be occupied by user or AI, and user can play with keyboard or mouse
@@ -17,29 +15,29 @@ Rules mostly follow standard Pong implementations, with some exceptions:
 In the main menu, use arrow keys on Player1 and Player2 to choose between Keyboard, Mouse and AI.
 Hit Return on Options to set further settings, or on Start to begin the game.
 Keys for Keyboard control are W and S for either player. An option to change keybindings will be added later.
-[works for both menus, but game only responds to qt-based menu]
 
 # Repository overview  
 The game menu and the game itself are built as libraries (game and sfml-menu dynamic, qt menu static). A main executable is placed in the root folder, and CMake is used to compile. Folders:  
 - doc: resources for this documentation
 - Game: builds the game as shared library
 - include: header files
-- menu: builds the menu as shared library 
-- qtMenu: builds the menu  as static library
+- menu: for reference only, manually built menu. built as shared library 
+- qtMenu: builds the menu, as static library
 - tests: unit tests for the game
 
 # class overview and design decisions  
 
 ## Menu  
 
+This is a state-based implementation, created without modern features (signals, slots). 
 All menus derive from a common base class (MenuBase) which allows displaying, scrolling through and highlighting text items. The return type of its update function is an enum (Windows), describing which menu shall be opened next.   
-InputSettings and Options: see section "Shared objects" below.
-
+MainMenu and OptionsMenu are the currently only submenus, deriving from Menu. They differ in the text items they display, and contain additional data; the overriden handleKey() function determines how the data is changed on user interaction. 
+The main Menu saves the current selection of player types, the optionsMenu current general options (speed, paddle size), and a future Keyboard menu will save keybindings.  
 ![UML overview](doc/menu.png)
 
-The main Menu saves the current selection of player types, the optionsMenu current general options (speed, paddle size), and a future Keyboard menu will save keybindings.  
 The main class Menu is actually called MenuImpl in the code (Menu is the public-facing API), shortened here for clarity. It contains all menus and manages switching between them, and it responds to external queries.  
 The menu will only be called once. To avoid unneccesary copies and clarify ownership, objects are moved upon query (not yet for options, passed as const ref). 
+InputSettings and Options: see section "Shared objects" below.
 
 ## Qt-based Menu
 This version of the menu benefits from the Signal/slot logic. This makes it much easier to switch between submenus in comparison to returning a state enum ("nextWindow: Windows::mainMenu")).  

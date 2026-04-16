@@ -12,8 +12,8 @@ public:
 	void run();
 
 	Options getOptions() const;
-	InputSettings getP1() const;
-	InputSettings getP2() const;
+	Controls getP1() const;
+	Controls getP2() const;
 
 private:
 	Menu* mainMenu; //not owned
