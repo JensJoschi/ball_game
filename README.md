@@ -1,7 +1,8 @@
 # Overview  
-This is a Pong game for demonstration purposes. It is on purpose created like a larger game engine (and a bit overengineered) to demonstrate various design patterns and architecture considerations.
-Patterns are mostly implemented manually (observer, command, etc.), but for the Event Loop and rendering SFML was used.  
-Menu and core game logic are separately compiled. Two versions of the menu exist: a state-based manual implementation using SFML for rendering, and a qt-based version. Only the qt-based version is currently in use.
+This is not a game repo - it does not produce a visually pleasing or entertaining game. It is rather a demonstration of design patterns and architecture decisions, using a Pong-like game engine as example. For its current purpose (a pong game) it is obviously overengineered, and at the same time not very playable.  
+**For example**, to demonstrate the observer pattern the background turns cyan after 3 collisions were noticed, which is ...aesthetically questionable, but proves a point.
+
+Most patterns were implemented manually (observer, command, etc.), but for the Event Loop and rendering SFML was used.  
 
 Rules mostly follow standard Pong implementations, with some exceptions:
 - Each side can be occupied by user or AI, and user can play with keyboard or mouse
@@ -11,13 +12,15 @@ Rules mostly follow standard Pong implementations, with some exceptions:
 - Power items may randomly show up, changing e.g. velocity or paddle sizes
 - After a few collisions, the ball is replaced by a new ball with higher velocity
 
-# How to play
+# How to play 
 In the main menu, use arrow keys on Player1 and Player2 to choose between Keyboard, Mouse and AI.
 Hit Return on Options to set further settings, or on Start to begin the game.
 Another (slightly nicer but non-functional) menu will pop up. This menu is the manually created one. Simply hit start again.
 Keys for Keyboard control are W and S for either player. An option to change keybindings will be added later.
 
 # Repository overview  
+Menu and core game logic are separately compiled. Two versions of the menu exist: a state-based manual implementation using SFML for rendering, and a qt-based version. Only the qt-based version is currently in use.
+
 The game menu and the game itself are built as libraries (game and sfml-menu dynamic, qt menu static). A main executable is placed in the root folder, and CMake is used to compile. Folders:  
 - doc: resources for this documentation
 - Game: builds the game as shared library
@@ -97,4 +100,4 @@ allows abstract control of any object, by human, AI or the game environment with
 - keybinding menu to write, possibly also menus for AI difficulty and mouse sensitivity
 - if player uses mouse, paddle moves with constant speed into direction of mouse. Could instantly go to current mouse pos instead, to track the mouse more closely
 - sound is missing in UML
-- balls are placed with random initial direction. Sometimes they fly (almost) vertical and it takes long to reach the player
+- balls are placed with random initial direction. Sometimes they move (almost) vertical and it takes long to reach the player
