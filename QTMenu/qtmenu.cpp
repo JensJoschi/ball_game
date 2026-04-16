@@ -54,9 +54,11 @@ void QtMenu::run() {
 	stackedWidget->show();
 }
 
-//const Options& QtMenu::getOptions() const{ //to do
-//	assert(false && "qtmenu function not implemented");
-//}
+Options QtMenu::getOptions() const{ 
+	std::vector<int> states = optionsMenu->getStates();
+	return Options { static_cast<float>(states[0]), static_cast<float>(states[1]), states[2] };
+	//this menu only stores ints, float was too much precision for size/velocity anyway.
+}
 //InputSettings QtMenu::getP1() const {
 //	//to do
 //	assert(false && "qtmenu function not implemented");

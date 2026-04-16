@@ -32,8 +32,8 @@ int main(int argc, char *argv[]) {
     qtMenu.run();
     mainWindow->show();
     int result = a.exec();
+	Options options = qtMenu.getOptions();
 
-	// qtMenu.getOptions(); etc
     delete mainWindow;
 
     float width = 800.0;
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     InputSettings p1{ std::move(*m.getP1()) };
     InputSettings p2{ std::move(*m.getP2()) };
     Game game(
-           m.getOptions(), 
+            options,
            std::move(p1),
 		   std::move(p2),
            window);

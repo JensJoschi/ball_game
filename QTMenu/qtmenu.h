@@ -11,7 +11,7 @@ public:
 	~QtMenu() = default; //ownerhship handled by qt parent-child system
 	void run();
 
-	const Options& getOptions() const;
+	Options getOptions() const;
 	InputSettings getP1() const;
 	InputSettings getP2() const;
 

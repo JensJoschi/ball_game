@@ -1,23 +1,31 @@
 # Overview  
-This is a little pong game for demonstration purposes. While it may work, the main objective is to demonstrate various design patterns and best practices. 
+This is a Pong game for demonstration purposes. It is on purpose created like a larger game engine (and a bit overengineered) to demonstrate various design patterns and architecture considerations.
+Patterns are mostly implemented manually (observer, command, etc.), but for the Event Loop and rendering purposes SFML was used.  
+Menu and core game logic are separately compiled. Two versions of the menu exist: a state-based manual implementation using SFML for rendering, and a qt-based version. 
 
-A ball is placed in the middle of a field. It moves into a random direction with constant velocity, and it will rebounce from any hard object it encounters. These hard objects are 1) the upper and lower walls, 2) paddles that can
-be controlled by Player or AI. If the ball moves past the paddle and enters the right/left edge of the field, the opposite site gains a point. 
+[work in-progress, qt replacing the SFML-based version. currently 2 menus show up on running]
 
-A menu is shown at startup, letting the user adjust the number of human players, constrols, AI difficulty (if applicable) and sides. The game is over when the player aborts. After every 15 collisions (irrespective of score), the speed is increased and a new ball is placed.
-
+Rules mostly follow standard Pong implementations, with some exceptions:
+- Each side can be occupied by user or AI, and user can play with keyboard or mouse
+- Paddle sizes, initial ball velocity and AI difficulty can be set by user
+- The ball deflects from paddles according to standard physics (angle of deflection = angle of incidence)
+- The ball nevertheless travels with constant velocity and speed is not affected by friction or collisions
+- Power items may randomly show up, changing e.g. velocity or paddle sizes
+- After a few collisions, the ball is replaced by a new ball with higher velocity
 
 # How to play
 In the main menu, use arrow keys on Player1 and Player2 to choose between Keyboard, Mouse and AI.
 Hit Return on Options to set further settings, or on Start to begin the game.
 Keys for Keyboard control are W and S for either player. An option to change keybindings will be added later.
+[works for both menus, but game only responds to qt-based menu]
 
 # Repository overview  
-The game menu and the game itself are built as shared libraries (dll). A main executable is placed in the root folder, and CMake is used to compile. Folders:  
+The game menu and the game itself are built as libraries (game and sfml-menu dynamic, qt menu static). A main executable is placed in the root folder, and CMake is used to compile. Folders:  
 - doc: resources for this documentation
-- Game: builds the game as shared library (dll)
+- Game: builds the game as shared library
 - include: header files
-- menu: builds the menu as shared library (dll)
+- menu: builds the menu as shared library 
+- qtMenu: builds the menu  as static library
 - tests: unit tests for the game
 
 # class overview and design decisions  
@@ -33,12 +41,21 @@ The main Menu saves the current selection of player types, the optionsMenu curre
 The main class Menu is actually called MenuImpl in the code (Menu is the public-facing API), shortened here for clarity. It contains all menus and manages switching between them, and it responds to external queries.  
 The menu will only be called once. To avoid unneccesary copies and clarify ownership, objects are moved upon query (not yet for options, passed as const ref). 
 
+## Qt-based Menu
+This version of the menu benefits from the Signal/slot logic. This makes it much easier to switch between submenus in comparison to returning a state enum ("nextWindow: Windows::mainMenu")).  
+
+Instead of inheriting submodels storing different contents, the Menu holds a more generic vector of items (type-safe variants) and otherwise handles the movement logic only. Thus there is no need to derive multiple submenus. 
+
+The parent system makes it easier to consistently style child labels, and memory safety is also guaranteed. 
+
+
 ## Shared objects  
 Shared objects concern the controller settings and options, which are output of the menu, and input to the game.  
 
 ![UML overview](doc/structs.png)
 InputSettings contains a general and a controller-specific part. Std::variant is used to store the controller-specific part (Keyboard, Mouse, AI) in a single object.  
 Because all shared objects are simple structs, they are trivially movable.
+[- note: keyboard settings currently stores SFML::keys which Qt cannot provide. needs update to store char.]
 
 ## Game    
 The core of the game consists of a Game object, Ball and Paddle. Balls and Paddles must be movable, visible on screen, and able to collide. The game additionally needs inputs regarding general settings (ball speed) and type of control (AI/keyboard,mouse).
@@ -60,7 +77,7 @@ wide collisions, and trigger changes in difficulty or color as the game progress
 the ball speed increases and ball color changes on every 15 collisions.
 To demonstrate the versatility of the observer pattern, another observer (Sound) is added, and it plays a sound on various notable events (scores, collisions). It is independent of 
 gameState and hooks directly on various Objects (paddles ball - currently the same as game state but may also be a smaller or larger subset in the future). It does not yet use sfml::sound but a simple command line output.
-
+The observer pattern follows classic GoF style, and observers are attached as raw pointers. To prevent observers from holding a dangling pointer, all PhysicalObjects (observed entities) emit a death notice when the destructor is called (onDangle())). No Fallback on RAII(as with smart pointers), but faster.
 
 **Controllers and object movement:**  
 
@@ -81,3 +98,4 @@ allows abstract control of any object, by human, AI or the game environment with
 - keybinding menu to write, possibly also menus for AI difficulty and mouse sensitivity
 - if player uses mouse, paddle moves with constant speed into direction of mouse. Could instantly go to current mouse pos instead, to track the mouse more closely
 - sound is missing in UML
+- balls are placed with random initial direction. Sometimes they fly (almost) vertical and it takes long to reach the player
