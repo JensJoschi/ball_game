@@ -1,11 +1,10 @@
 #QTMenu/cmakeLists.txt
 message(STATUS "Creating QT-based menu ...")
 
-
 set (QTMENUFILES 
-    "main.cpp"
     "menu.cpp" 
     "menuitem.cpp"
+    "qtMenu.cpp"
 )
 if(NOT QTMENUFILES)
     message(FATAL_ERROR "no files to compile in qtmenu")
@@ -15,20 +14,11 @@ foreach(FILE IN LISTS QTMENUFILES)
     message(STATUS "${FILE}")
 endforeach()
 
-qt_standard_project_setup()
-qt_add_executable(qtmenu
-    ${QTMENUFILES}
-)
+qt_add_library(qtmenu STATIC ${QTMENUFILES})
 
 target_link_libraries(qtmenu PRIVATE Qt6::Widgets)
-
-set_target_properties(qtmenu PROPERTIES
-    WIN32_EXECUTABLE ON
+target_include_directories(qtmenu PRIVATE 
+    ${CMAKE_SOURCE_DIR}/include
 )
 
-add_custom_command(TARGET qtmenu POST_BUILD #add qt dlls to output dir
-    COMMAND "${CMAKE_PREFIX_PATH}/bin/windeployqt.exe"
-            --debug
-            --no-translations
-            $<TARGET_FILE:qtmenu>
-)
+

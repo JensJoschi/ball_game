@@ -2,13 +2,39 @@
 #include "game.h"
 #include "inputSettings.h"
 #include "optionMenu.h"
+#include "qtmenu.h"
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <cassert>
 #include <memory>
-#include <cassert>
+#include <QApplication>
+#include <QMainWindow>
+#include <QStackedWidget>
 
-int main() {
+
+int main(int argc, char *argv[]) {
+    QApplication a(argc, argv);
+    a.setStyleSheet(R"(
+        QWidget [highlighted="false"] QLabel {
+            color: black;
+        }
+        QWidget [highlighted="true"] QLabel{
+            color: red;
+        }
+    )");
+
+	QMainWindow* mainWindow = new QMainWindow;
+    QStackedWidget* stackedWidget = new QStackedWidget;
+    mainWindow->setCentralWidget(stackedWidget);
+
+	QtMenu qtMenu(stackedWidget);
+    qtMenu.run();
+    mainWindow->show();
+    int result = a.exec();
+
+	// qtMenu.getOptions(); etc
+    delete mainWindow;
 
     float width = 800.0;
     float height = 600.0;
@@ -23,7 +49,7 @@ int main() {
            m.getOptions(), 
            std::move(p1),
 		   std::move(p2),
-                        window);
+           window);
     game.run();
     std::cout << "game over.";
 }

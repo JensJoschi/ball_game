@@ -7,7 +7,7 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
-#include "helpers.h"
+#include "enums.h"
 
 class MenuItemBase: public QWidget
 {

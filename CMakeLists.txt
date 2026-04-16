@@ -9,6 +9,9 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 4)
     message(FATAL_ERROR "This project requires a 64-bit build. Please configure accordingly.")
 endif()
 
+# ---------QT--------------
+qt_standard_project_setup()
+
 # --------- SFML -------------
 if(NOT DEFINED SFML_ROOT)
     set (SFML_ROOT "C:/tools/SFML-2.6.2/") #prevents usage of sfml3, which is incompatible
@@ -40,13 +43,17 @@ add_subdirectory(tests)
 add_subdirectory(QTMenu)
 
 # --------- main executable -------------
-add_executable(ball main.cpp)
-target_link_libraries(ball PRIVATE menu game sfml-graphics)
 
+add_executable(ball main.cpp)
+target_link_libraries(ball PRIVATE menu game sfml-graphics qtmenu Qt6::Core Qt6::Widgets)
+set_target_properties(ball PROPERTIES
+    WIN32_EXECUTABLE ON
+)
 target_include_directories(ball PRIVATE 
 	${CMAKE_SOURCE_DIR}/include
-	${CMAKE_SOURCE_DIR}/menu/ #public header of menu, temporarily
-    ${CMAKE_SOURCE_DIR}/game/ #public header of game, temporarily
+	${CMAKE_SOURCE_DIR}/menu/ #public header of menu
+    ${CMAKE_SOURCE_DIR}/game/ #public header of game
+    ${CMAKE_SOURCE_DIR}/QTMenu/ #public header of QTMenu
 ) 
 
 # --------- post-build -------------
@@ -63,4 +70,11 @@ add_custom_command(TARGET ball POST_BUILD
         $<$<CONFIG:RelWithDebInfo>:${SFML_BIN}/sfml-system-2.dll>
         "C:/Windows/Fonts/arial.ttf"
         $<TARGET_FILE_DIR:ball>
+)
+
+add_custom_command(TARGET ball POST_BUILD #add qt dlls to output dir
+    COMMAND "${CMAKE_PREFIX_PATH}/bin/windeployqt.exe"
+            --debug
+            --no-translations
+            $<TARGET_FILE:ball>
 )
